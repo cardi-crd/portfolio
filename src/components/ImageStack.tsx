@@ -263,8 +263,10 @@ export default function ImageStack() {
                    <motion.button
                      layoutId={layoutId}
                      onClick={() => openAlbumZoom(cat.key)}
-                     className="w-full aspect-[3/4] rounded-2xl md:rounded-3xl overflow-hidden bg-white/5 block"
+                     onTouchStart={() => openAlbumZoom(cat.key)}
+                     className="w-full aspect-[3/4] rounded-2xl md:rounded-3xl overflow-hidden bg-white/5 block touch-manipulation"
                      whileHover={{ scale: 1.02 }}
+                     whileTap={{ scale: 0.98 }}
                      transition={{ duration: 0.2, ease: "easeOut" }}
                    >
                      <StackedPreview images={imgs} mode="stacked" />
@@ -307,8 +309,12 @@ export default function ImageStack() {
                   console.log('Clicking subcategory:', sc.key);
                   console.log('Subcategory data:', sc);
                   setSelectedSubCategory(sc.key);
-                }} 
-                className="text-left group min-w-[260px]"
+                }}
+                onTouchStart={() => {
+                  console.log('Touch subcategory:', sc.key);
+                  setSelectedSubCategory(sc.key);
+                }}
+                className="text-left group min-w-[260px] touch-manipulation"
               >
                 <h3 className="text-white/90 font-semibold mb-2">{sc.title}</h3>
                 <div className="w-full aspect-[3/4] rounded-2xl md:rounded-3xl overflow-hidden bg-white/5">
@@ -348,7 +354,8 @@ export default function ImageStack() {
                 <button
                   key={img.id}
                   onClick={() => setViewingPhoto({ images: sub.images, currentIndex: index })}
-                  className="aspect-[4/5] rounded-xl overflow-hidden bg-white/5 hover:scale-105 transition-transform relative"
+                  onTouchStart={() => setViewingPhoto({ images: sub.images, currentIndex: index })}
+                  className="aspect-[4/5] rounded-xl overflow-hidden bg-white/5 hover:scale-105 transition-transform relative touch-manipulation"
                   style={{ minHeight: '200px' }}
                 >
                   <Img src={img.src} alt={img.title} />
@@ -376,7 +383,8 @@ export default function ImageStack() {
               <button
                 key={img.id}
                 onClick={() => setViewingPhoto({ images: category.images!, currentIndex: index })}
-                className="aspect-[4/5] rounded-xl overflow-hidden bg-white/5 hover:scale-105 transition-transform"
+                onTouchStart={() => setViewingPhoto({ images: category.images!, currentIndex: index })}
+                className="aspect-[4/5] rounded-xl overflow-hidden bg-white/5 hover:scale-105 transition-transform touch-manipulation"
               >
                 <Img src={img.src} alt={img.title} />
               </button>
