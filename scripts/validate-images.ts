@@ -52,12 +52,11 @@ const categories = [
       { id: 6, src: '/images/portraiture/cat.png', title: 'Cat', category: 'Portraiture' },
       { id: 7, src: '/images/portraiture/rach1.avif', title: 'Rach1', category: 'Portraiture' },
       { id: 8, src: '/images/portraiture/ally.png', title: 'Ally', category: 'Portraiture' },
-      { id: 9, src: '/images/portraiture/ally2.png', title: 'Ally2', category: 'Portraiture' },
+            { id: 9, src: '/images/portraiture/ally2.png', title: 'Ally2', category: 'Portraiture' },
       { id: 10, src: '/images/portraiture/ally3.png', title: 'Ally3', category: 'Portraiture' },
-      { id: 11, src: '/images/portraiture/ant.png', title: 'Ant', category: 'Portraiture' },
-      { id: 12, src: '/images/portraiture/car.jpg', title: 'Car', category: 'Portraiture' },
-      { id: 13, src: '/images/portraiture/port1.jpg', title: 'Port1', category: 'Portraiture' },
-      { id: 14, src: '/images/portraiture/port2.jpg', title: 'Port2', category: 'Portraiture' }
+      { id: 11, src: '/images/portraiture/car.jpg', title: 'Car', category: 'Portraiture' },
+      { id: 12, src: '/images/portraiture/port1.jpg', title: 'Port1', category: 'Portraiture' },
+      { id: 13, src: '/images/portraiture/port2.jpg', title: 'Port2', category: 'Portraiture' }
     ] 
   },
   { 
