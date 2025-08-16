@@ -430,9 +430,9 @@ function PhotoStack({ stackKey, images, title }: StackProps) {
                 whileTap={index === currentIndex ? { scale: 0.98 } : undefined}
               >
                 <div className="relative w-full h-full">
-                  {image?.src ? (
+                  {typeof image?.src === 'string' && image.src.trim() ? (
                     <Image
-                      src={image.src}
+                      src={image.src.startsWith('/') ? image.src : `/${image.src}`}
                       alt={image.title ?? ''}
                       fill
                       sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
@@ -442,8 +442,15 @@ function PhotoStack({ stackKey, images, title }: StackProps) {
                       quality={85}
                       placeholder="blur"
                       blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAAIAAoDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAhEAACAQMDBQAAAAAAAAAAAAABAgMABAUGIWGRkqGx0f/EABUBAQEAAAAAAAAAAAAAAAAAAAMF/8QAGhEAAgIDAAAAAAAAAAAAAAAAAAECEgMRkf/aAAwDAQACEQMRAD8AltJagyeH0AthI5xdrLcNM91BF5pX2HaH9bcfaSXWGaRmknyJckliyjqTzSlT54b6bk+h0R//2Q=="
+                      onError={(e) => {
+                        console.error('Image failed to load:', image.src);
+                        console.error('Error:', e);
+                      }}
                     />
-                  ) : null}
+                  ) : (
+                    console.warn('Missing/invalid src', image), 
+                    <div className="w-full h-full bg-gray-300 flex items-center justify-center text-gray-600">Missing Image</div>
+                  )}
                   <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
 
                   {/* Image Info - only show on current image */}
@@ -487,18 +494,27 @@ function PhotoStack({ stackKey, images, title }: StackProps) {
               whileTap={{ scale: 0.98 }}
             >
               <div className="relative w-full h-full rounded-2xl overflow-hidden shadow-2xl">
-                <Image
-                  src={images[currentIndex].src}
-                  alt={images[currentIndex].title}
-                  fill
-                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                  className="object-cover"
-                  priority={false}
-                  loading="lazy"
-                  quality={85}
-                  placeholder="blur"
-                  blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAAIAAoDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAhEAACAQMDBQAAAAAAAAAAAAABAgMABAUGIWGRkqGx0f/EABUBAQEAAAAAAAAAAAAAAAAAAAMF/8QAGhEAAgIDAAAAAAAAAAAAAAAAAAECEgMRkf/aAAwDAQACEQMRAD8AltJagyeH0AthI5xdrLcNM91BF5pX2HaH9bcfaSXWGaRmknyJckliyjqTzSlT54b6bk+h0R//2Q=="
-                />
+                {typeof images[currentIndex]?.src === 'string' && images[currentIndex].src.trim() ? (
+                  <Image
+                    src={images[currentIndex].src.startsWith('/') ? images[currentIndex].src : `/${images[currentIndex].src}`}
+                    alt={images[currentIndex].title ?? ''}
+                    fill
+                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                    className="object-cover"
+                    priority={false}
+                    loading="lazy"
+                    quality={85}
+                    placeholder="blur"
+                    blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAAIAAoDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAhEAACAQMDBQAAAAAAAAAAAAABAgMABAUGIWGRkqGx0f/EABUBAQEAAAAAAAAAAAAAAAAAAAMF/8QAGhEAAgIDAAAAAAAAAAAAAAAAAAECEgMRkf/aAAwDAQACEQMRAD8AltJagyeH0AthI5xdrLcNM91BF5pX2HaH9bcfaSXWGaRmknyJckliyjqTzSlT54b6bk+h0R//2Q=="
+                    onError={(e) => {
+                      console.error('Image failed to load:', images[currentIndex].src);
+                      console.error('Error:', e);
+                    }}
+                  />
+                ) : (
+                  console.warn('Missing/invalid src', images[currentIndex]), 
+                  <div className="w-full h-full bg-gray-300 flex items-center justify-center text-gray-600">Missing Image</div>
+                )}
                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
 
                 {/* Image Info */}
@@ -565,19 +581,28 @@ function PhotoStack({ stackKey, images, title }: StackProps) {
               transition={{ duration: 0.3 }}
               className="relative w-full h-full max-w-4xl max-h-[90vh] rounded-xl overflow-hidden"
             >
-              <Image
-                src={images[currentIndex].src}
-                alt={images[currentIndex].title}
-                fill
-                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 80vw, 60vw"
-                className="object-contain"
-                priority={true}
-                loading="eager"
-                quality={95}
-                placeholder="blur"
-                blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAAIAAoDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAhEAACAQMDBQAAAAAAAAAAAAABAgMABAUGIWGRkqGx0f/EABUBAQEAAAAAAAAAAAAAAAAAAAMF/8QAGhEAAgIDAAAAAAAAAAAAAAAAAAECEgMRkf/aAAwDAQACEQMRAD8AltJagyeH0AthI5xdrLcNM91BF5pX2HaH9bcfaSXWGaRmknyJckliyjqTzSlT54b6bk+h0R//2Q=="
-                onClick={(e) => e.stopPropagation()}
-              />
+              {typeof images[currentIndex]?.src === 'string' && images[currentIndex].src.trim() ? (
+                <Image
+                  src={images[currentIndex].src.startsWith('/') ? images[currentIndex].src : `/${images[currentIndex].src}`}
+                  alt={images[currentIndex].title ?? ''}
+                  fill
+                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 80vw, 60vw"
+                  className="object-contain"
+                  priority={true}
+                  loading="eager"
+                  quality={95}
+                  placeholder="blur"
+                  blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAAIAAoDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAhEAACAQMDBQAAAAAAAAAAAAABAgMABAUGIWGRkqGx0f/EABUBAQEAAAAAAAAAAAAAAAAAAAMF/8QAGhEAAgIDAAAAAAAAAAAAAAAAAAECEgMRkf/aAAwDAQACEQMRAD8AltJagyeH0AthI5xdrLcNM91BF5pX2HaH9bcfaSXWGaRmknyJckliyjqTzSlT54b6bk+h0R//2Q=="
+                  onClick={(e) => e.stopPropagation()}
+                  onError={(e) => {
+                    console.error('Image failed to load:', images[currentIndex].src);
+                    console.error('Error:', e);
+                  }}
+                />
+              ) : (
+                console.warn('Missing/invalid src', images[currentIndex]), 
+                <div className="w-full h-full bg-gray-300 flex items-center justify-center text-gray-600">Missing Image</div>
+              )}
             </motion.div>
 
             {/* Image Info */}
@@ -784,18 +809,27 @@ export default function ImageStack() {
                             transition: { duration: 0.3 }
                           } : {}}
                         >
-                          <Image
-                            src={image.src}
-                            alt={image.title}
-                            fill
-                            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                            className="object-cover"
-                            priority={false}
-                            loading="lazy"
-                            quality={85}
-                            placeholder="blur"
-                            blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAAIAAoDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAhEAACAQMDBQAAAAAAAAAAAAABAgMABAUGIWGRkqGx0f/EABUBAQEAAAAAAAAAAAAAAAAAAAMF/8QAGhEAAgIDAAAAAAAAAAAAAAAAAAECEgMRkf/aAAwDAQACEQMRAD8AltJagyeH0AthI5xdrLcNM91BF5pX2HaH9bcfaSXWGaRmknyJckliyjqTzSlT54b6bk+h0R//2Q=="
-                          />
+                          {typeof image?.src === 'string' && image.src.trim() ? (
+                            <Image
+                              src={image.src.startsWith('/') ? image.src : `/${image.src}`}
+                              alt={image.title ?? ''}
+                              fill
+                              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                              className="object-cover"
+                              priority={false}
+                              loading="lazy"
+                              quality={85}
+                              placeholder="blur"
+                              blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAAIAAoDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAhEAACAQMDBQAAAAAAAAAAAAABAgMABAUGIWGRkqGx0f/EABUBAQEAAAAAAAAAAAAAAAAAAAMF/8QAGhEAAgIDAAAAAAAAAAAAAAAAAAECEgMRkf/aAAwDAQACEQMRAD8AltJagyeH0AthI5xdrLcNM91BF5pX2HaH9bcfaSXWGaRmknyJckliyjqTzSlT54b6bk+h0R//2Q=="
+                              onError={(e) => {
+                                console.error('Image failed to load:', image.src);
+                                console.error('Error:', e);
+                              }}
+                            />
+                          ) : (
+                            console.warn('Missing/invalid src', image), 
+                            <div className="w-full h-full bg-gray-300 flex items-center justify-center text-gray-600">Missing Image</div>
+                          )}
                           <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent" />
                           
                           {/* Image border for better definition */}
