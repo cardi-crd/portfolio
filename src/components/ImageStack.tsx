@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { motion, AnimatePresence, PanInfo } from 'framer-motion';
+import Image from 'next/image';
 
 type ImageData = {
   id: number;
@@ -103,26 +104,21 @@ function getAllImagesFromCategory(category: Category): ImageData[] {
   return category.images || [];
 }
 
-// Error handling for images
+// Optimized image component with Next.js Image
 const Img = ({ src, alt }: { src: string; alt: string }) => (
   <div className="w-full h-full relative">
-    <img
+    <Image
       src={src}
       alt={alt}
-      className="w-full h-full object-cover absolute inset-0"
-      onLoad={() => {
-        console.log('Image loaded successfully:', src);
-      }}
-              onError={(e) => {
-          console.error('Image failed:', src);
-          const el = e.currentTarget;
-          el.style.display = 'none';
-          const parent = el.parentElement;
-          if (parent) {
-            parent.innerHTML = `<div class="w-full h-full flex items-center justify-center bg-red-700/60 text-white text-xs p-2 text-center">Failed to load image</div>`;
-          }
-        }}
-      />
+      fill
+      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+      className="object-cover"
+      priority={false}
+      loading="lazy"
+      quality={85}
+      placeholder="blur"
+      blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAAIAAoDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAhEAACAQMDBQAAAAAAAAAAAAABAgMABAUGIWGRkqGx0f/EABUBAQEAAAAAAAAAAAAAAAAAAAMF/8QAGhEAAgIDAAAAAAAAAAAAAAAAAAECEgMRkf/aAAwDAQACEQMRAD8AltJagyeH0AthI5xdrLcNM91BF5pX2HaH9bcfaSXWGaRmknyJckliyjqTzSlT54b6bk+h0R//2Q=="
+    />
   </div>
 );
 
