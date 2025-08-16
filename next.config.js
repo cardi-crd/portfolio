@@ -51,7 +51,7 @@ const nextConfig = {
     ],
   },
   experimental: {
-    optimizeCss: true,
+    optimizeCss: false,
   },
   compress: true,
   poweredByHeader: false,
