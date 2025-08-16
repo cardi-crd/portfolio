@@ -175,13 +175,6 @@ function getPreviewImagesFromCategory(category: Category): ImageData[] {
   return allImages.slice(0, 6) // Show first 6 images in preview
 }
 
-// Debug: Log the image data to console
-console.log('Photo stacks loaded:', Object.keys(photoStacks).map(key => ({
-  category: key,
-  count: photoStacks[key].length,
-  firstImage: photoStacks[key][0]?.src
-})))
-
 interface StackProps {
   stackKey: string
   images: ImageData[]
