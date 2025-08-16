@@ -163,7 +163,8 @@ function StackedPreview({ images, mode = 'stacked' }: { images: ImageData[]; mod
             transform: `rotate(${rotations[index]}deg) translate(${xOffsets[index]}px, ${yOffsets[index]}px) scale(${scales[index]})`,
             opacity: opacities[index],
             zIndex: preview.length - index,
-            boxShadow: '0 4px 20px rgba(0,0,0,0.3)'
+            boxShadow: '0 4px 20px rgba(0,0,0,0.3)',
+            pointerEvents: index === 0 ? 'auto' : 'none'
           }}
         >
           <Img src={img.src} alt={img.title} />
@@ -223,12 +224,16 @@ export default function ImageStack() {
   }, [viewingPhoto, zoomedCategoryKey]);
 
   const openAlbumZoom = (key: string) => {
+    console.log('Album clicked:', key);
     const category = categories.find(c => c.key === key);
+    console.log('Category found:', category);
     if (category?.hasSubCategories) {
       // For categories with subcategories, navigate to subcategory selection
+      console.log('Opening subcategory selection for:', key);
       setSelectedCategory(key);
     } else {
       // For categories without subcategories, open zoom overlay
+      console.log('Opening zoom overlay for:', key);
       setZoomedCategoryKey(key);
       setAlbumPhotoIndex(0);
     }
