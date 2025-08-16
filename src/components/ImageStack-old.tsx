@@ -48,90 +48,48 @@ const categories: Category[] = [
           },
           {
             id: 2,
-            src: '/images/rodeo/tucson/tucson1.png',
-            title: 'Tucson Rodeo 1',
-            category: 'Tucson Rodeo'
-          },
-          {
-            id: 3,
-            src: '/images/rodeo/tucson/tucson2.png',
-            title: 'Tucson Rodeo 2',
-            category: 'Tucson Rodeo'
-          },
-          {
-            id: 4,
-            src: '/images/rodeo/tucson/tucson3.png',
-            title: 'Tucson Rodeo 3',
-            category: 'Tucson Rodeo'
-          },
-          {
-            id: 5,
             src: '/images/rodeo/tucson/tucson4.png',
             title: 'Tucson Rodeo 4',
             category: 'Tucson Rodeo'
           },
           {
-            id: 6,
-            src: '/images/rodeo/tucson/tucson5.png',
-            title: 'Tucson Rodeo 5',
-            category: 'Tucson Rodeo'
-          },
-          {
-            id: 7,
-            src: '/images/rodeo/tucson/tucson6.png',
-            title: 'Tucson Rodeo 6',
-            category: 'Tucson Rodeo'
-          },
-          {
-            id: 8,
+            id: 3,
             src: '/images/rodeo/tucson/tucson7.png',
             title: 'Tucson Rodeo 7',
             category: 'Tucson Rodeo'
           },
           {
-            id: 9,
-            src: '/images/rodeo/tucson/tucson8.png',
-            title: 'Tucson Rodeo 8',
-            category: 'Tucson Rodeo'
-          },
-          {
-            id: 10,
-            src: '/images/rodeo/tucson/tucson9.png',
-            title: 'Tucson Rodeo 9',
-            category: 'Tucson Rodeo'
-          },
-          {
-            id: 11,
+            id: 4,
             src: '/images/rodeo/tucson/tucson10.png',
             title: 'Tucson Rodeo 10',
             category: 'Tucson Rodeo'
           },
           {
-            id: 12,
+            id: 5,
             src: '/images/rodeo/tucson/tucson11.png',
             title: 'Tucson Rodeo 11',
             category: 'Tucson Rodeo'
           },
           {
-            id: 13,
+            id: 6,
             src: '/images/rodeo/tucson/tucson12.png',
             title: 'Tucson Rodeo 12',
             category: 'Tucson Rodeo'
           },
           {
-            id: 14,
+            id: 7,
             src: '/images/rodeo/tucson/tucson13.png',
             title: 'Tucson Rodeo 13',
             category: 'Tucson Rodeo'
           },
           {
-            id: 15,
+            id: 8,
             src: '/images/rodeo/tucson/tucson14.png',
             title: 'Tucson Rodeo 14',
             category: 'Tucson Rodeo'
           },
           {
-            id: 16,
+            id: 9,
             src: '/images/rodeo/tucson/tucson15.png',
             title: 'Tucson Rodeo 15',
             category: 'Tucson Rodeo'
@@ -143,67 +101,67 @@ const categories: Category[] = [
         title: 'Prescott 4th of July Rodeo',
         images: [
           {
-            id: 17,
+            id: 10,
             src: '/images/rodeo/prescott/prescott.jpg',
             title: 'Prescott Rodeo',
             category: 'Prescott Rodeo'
           },
           {
-            id: 18,
+            id: 11,
             src: '/images/rodeo/prescott/prescott1.jpg',
             title: 'Prescott Rodeo 1',
             category: 'Prescott Rodeo'
           },
           {
-            id: 19,
+            id: 12,
             src: '/images/rodeo/prescott/prescott2.jpg',
             title: 'Prescott Rodeo 2',
             category: 'Prescott Rodeo'
           },
           {
-            id: 20,
+            id: 13,
             src: '/images/rodeo/prescott/prescott3.jpg',
             title: 'Prescott Rodeo 3',
             category: 'Prescott Rodeo'
           },
           {
-            id: 21,
+            id: 14,
             src: '/images/rodeo/prescott/prescott4.jpg',
             title: 'Prescott Rodeo 4',
             category: 'Prescott Rodeo'
           },
           {
-            id: 22,
+            id: 15,
             src: '/images/rodeo/prescott/prescott5.jpg',
             title: 'Prescott Rodeo 5',
             category: 'Prescott Rodeo'
           },
           {
-            id: 23,
+            id: 16,
             src: '/images/rodeo/prescott/prescott6.jpg',
             title: 'Prescott Rodeo 6',
             category: 'Prescott Rodeo'
           },
           {
-            id: 24,
+            id: 17,
             src: '/images/rodeo/prescott/prescott7.jpg',
             title: 'Prescott Rodeo 7',
             category: 'Prescott Rodeo'
           },
           {
-            id: 25,
+            id: 18,
             src: '/images/rodeo/prescott/prescott8.jpg',
             title: 'Prescott Rodeo 8',
             category: 'Prescott Rodeo'
           },
           {
-            id: 26,
+            id: 19,
             src: '/images/rodeo/prescott/prescott9.jpg',
             title: 'Prescott Rodeo 9',
             category: 'Prescott Rodeo'
           },
           {
-            id: 27,
+            id: 20,
             src: '/images/rodeo/prescott/prescott10.jpg',
             title: 'Prescott Rodeo 10',
             category: 'Prescott Rodeo'
@@ -218,67 +176,67 @@ const categories: Category[] = [
     hasSubCategories: false,
     images: [
       {
-        id: 28,
+        id: 21,
         src: '/images/portraiture/ally.png',
         title: 'Ally Portrait',
         category: 'Portraiture'
       },
       {
-        id: 29,
+        id: 22,
         src: '/images/portraiture/car.jpg',
         title: 'Car Portrait',
         category: 'Portraiture'
       },
       {
-        id: 30,
+        id: 23,
         src: '/images/portraiture/cat.png',
         title: 'Cat Portrait',
         category: 'Portraiture'
       },
       {
-        id: 31,
+        id: 24,
         src: '/images/portraiture/cat1.avif',
         title: 'Cat Portrait 1',
         category: 'Portraiture'
       },
       {
-        id: 32,
+        id: 25,
         src: '/images/portraiture/cat2.avif',
         title: 'Cat Portrait 2',
         category: 'Portraiture'
       },
       {
-        id: 33,
+        id: 26,
         src: '/images/portraiture/cat3.avif',
         title: 'Cat Portrait 3',
         category: 'Portraiture'
       },
       {
-        id: 34,
+        id: 27,
         src: '/images/portraiture/cn.avif',
         title: 'CN Portrait',
         category: 'Portraiture'
       },
       {
-        id: 35,
+        id: 28,
         src: '/images/portraiture/cndesert.jpg',
         title: 'CN Desert Portrait',
         category: 'Portraiture'
       },
       {
-        id: 36,
+        id: 29,
         src: '/images/portraiture/port1.jpg',
         title: 'Portrait 1',
         category: 'Portraiture'
       },
       {
-        id: 37,
+        id: 30,
         src: '/images/portraiture/port2.jpg',
         title: 'Portrait 2',
         category: 'Portraiture'
       },
       {
-        id: 38,
+        id: 31,
         src: '/images/portraiture/rach1.avif',
         title: 'Rach Portrait',
         category: 'Portraiture'
@@ -291,31 +249,31 @@ const categories: Category[] = [
     hasSubCategories: false,
     images: [
       {
-        id: 39,
+        id: 32,
         src: '/images/brandwork/arlierecess.jpg',
         title: 'Arlie Recess',
         category: 'Brand Work'
       },
       {
-        id: 40,
+        id: 33,
         src: '/images/brandwork/arlierecess2.jpg',
         title: 'Arlie Recess 2',
         category: 'Brand Work'
       },
       {
-        id: 41,
+        id: 34,
         src: '/images/brandwork/bbc.JPG',
         title: 'BBC Brand Work',
         category: 'Brand Work'
       },
       {
-        id: 42,
+        id: 35,
         src: '/images/brandwork/bbc2.JPG',
         title: 'BBC Brand Work 2',
         category: 'Brand Work'
       },
       {
-        id: 43,
+        id: 36,
         src: '/images/brandwork/savage.png',
         title: 'Savage Brand Work',
         category: 'Brand Work'
