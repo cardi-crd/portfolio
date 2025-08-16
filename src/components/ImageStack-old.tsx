@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { motion, AnimatePresence, PanInfo } from 'framer-motion'
-import { normalizeImagePath, isValidImagePath } from '@/lib/image-utils'
+import { normalizeImageSrc } from '@/lib/normalizeImageSrc'
 
 interface ImageData {
   id: number
@@ -430,30 +430,25 @@ function PhotoStack({ stackKey, images, title }: StackProps) {
                 whileTap={index === currentIndex ? { scale: 0.98 } : undefined}
               >
                 <div className="relative w-full h-full">
-                  {typeof image?.src === 'string' && image.src.trim() ? (
-                    (() => {
-                      const normalizedSrc = normalizeImagePath(image.src);
-                      if (!isValidImagePath(normalizedSrc)) {
-                        console.warn('Invalid image path after normalization:', { original: image.src, normalized: normalizedSrc });
-                        return <div className="w-full h-full bg-gray-300 flex items-center justify-center text-gray-600">Invalid Image Path</div>;
-                      }
-                      return (
-                        <img
-                          src={normalizedSrc}
-                          alt={image.title ?? ''}
-                          className="object-cover w-full h-full"
-                          loading="lazy"
-                          onError={(e) => {
-                            console.error('Image failed to load:', normalizedSrc);
-                            console.error('Error:', e);
-                          }}
-                        />
-                      );
-                    })()
-                  ) : (
-                    console.warn('Missing/invalid src', image), 
-                    <div className="w-full h-full bg-gray-300 flex items-center justify-center text-gray-600">Missing Image</div>
-                  )}
+                  {(() => {
+                    const s = normalizeImageSrc(image?.src);
+                    if (!s) {
+                      console.warn('Missing/invalid src', image);
+                      return <div className="w-full h-full bg-gray-300 flex items-center justify-center text-gray-600">Missing Image</div>;
+                    }
+                    return (
+                      <img
+                        src={s}
+                        alt={image.title ?? ''}
+                        className="object-cover w-full h-full"
+                        loading="lazy"
+                        onError={(e) => {
+                          console.error('Image failed to load:', s);
+                          console.error('Error:', e);
+                        }}
+                      />
+                    );
+                  })()}
                   <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
 
                   {/* Image Info - only show on current image */}
@@ -497,30 +492,25 @@ function PhotoStack({ stackKey, images, title }: StackProps) {
               whileTap={{ scale: 0.98 }}
             >
               <div className="relative w-full h-full rounded-2xl overflow-hidden shadow-2xl">
-                {typeof images[currentIndex]?.src === 'string' && images[currentIndex].src.trim() ? (
-                  (() => {
-                    const normalizedSrc = normalizeImagePath(images[currentIndex].src);
-                    if (!isValidImagePath(normalizedSrc)) {
-                      console.warn('Invalid image path after normalization:', { original: images[currentIndex].src, normalized: normalizedSrc });
-                      return <div className="w-full h-full bg-gray-300 flex items-center justify-center text-gray-600">Invalid Image Path</div>;
-                    }
-                    return (
-                      <img
-                        src={normalizedSrc}
-                        alt={images[currentIndex].title ?? ''}
-                        className="object-cover w-full h-full"
-                        loading="lazy"
-                        onError={(e) => {
-                          console.error('Image failed to load:', normalizedSrc);
-                          console.error('Error:', e);
-                        }}
-                      />
-                    );
-                  })()
-                ) : (
-                  console.warn('Missing/invalid src', images[currentIndex]), 
-                  <div className="w-full h-full bg-gray-300 flex items-center justify-center text-gray-600">Missing Image</div>
-                )}
+                {(() => {
+                  const s = normalizeImageSrc(images[currentIndex]?.src);
+                  if (!s) {
+                    console.warn('Missing/invalid src', images[currentIndex]);
+                    return <div className="w-full h-full bg-gray-300 flex items-center justify-center text-gray-600">Missing Image</div>;
+                  }
+                  return (
+                    <img
+                      src={s}
+                      alt={images[currentIndex].title ?? ''}
+                      className="object-cover w-full h-full"
+                      loading="lazy"
+                      onError={(e) => {
+                        console.error('Image failed to load:', s);
+                        console.error('Error:', e);
+                      }}
+                    />
+                  );
+                })()}
                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
 
                 {/* Image Info */}
@@ -587,31 +577,26 @@ function PhotoStack({ stackKey, images, title }: StackProps) {
               transition={{ duration: 0.3 }}
               className="relative w-full h-full max-w-4xl max-h-[90vh] rounded-xl overflow-hidden"
             >
-              {typeof images[currentIndex]?.src === 'string' && images[currentIndex].src.trim() ? (
-                (() => {
-                  const normalizedSrc = normalizeImagePath(images[currentIndex].src);
-                  if (!isValidImagePath(normalizedSrc)) {
-                    console.warn('Invalid image path after normalization:', { original: images[currentIndex].src, normalized: normalizedSrc });
-                    return <div className="w-full h-full bg-gray-300 flex items-center justify-center text-gray-600">Invalid Image Path</div>;
-                  }
-                  return (
-                    <img
-                      src={normalizedSrc}
-                      alt={images[currentIndex].title ?? ''}
-                      className="object-contain w-full h-full"
-                      loading="eager"
-                      onClick={(e) => e.stopPropagation()}
-                      onError={(e) => {
-                        console.error('Image failed to load:', normalizedSrc);
-                        console.error('Error:', e);
-                      }}
-                    />
-                  );
-                })()
-              ) : (
-                console.warn('Missing/invalid src', images[currentIndex]), 
-                <div className="w-full h-full bg-gray-300 flex items-center justify-center text-gray-600">Missing Image</div>
-              )}
+              {(() => {
+                const s = normalizeImageSrc(images[currentIndex]?.src);
+                if (!s) {
+                  console.warn('Missing/invalid src', images[currentIndex]);
+                  return <div className="w-full h-full bg-gray-300 flex items-center justify-center text-gray-600">Missing Image</div>;
+                }
+                return (
+                  <img
+                    src={s}
+                    alt={images[currentIndex].title ?? ''}
+                    className="object-contain w-full h-full"
+                    loading="eager"
+                    onClick={(e) => e.stopPropagation()}
+                    onError={(e) => {
+                      console.error('Image failed to load:', s);
+                      console.error('Error:', e);
+                    }}
+                  />
+                );
+              })()}
             </motion.div>
 
             {/* Image Info */}
@@ -818,30 +803,25 @@ export default function ImageStack() {
                             transition: { duration: 0.3 }
                           } : {}}
                         >
-                          {typeof image?.src === 'string' && image.src.trim() ? (
-                            (() => {
-                              const normalizedSrc = normalizeImagePath(image.src);
-                              if (!isValidImagePath(normalizedSrc)) {
-                                console.warn('Invalid image path after normalization:', { original: image.src, normalized: normalizedSrc });
-                                return <div className="w-full h-full bg-gray-300 flex items-center justify-center text-gray-600">Invalid Image Path</div>;
-                              }
-                              return (
-                                <img
-                                  src={normalizedSrc}
-                                  alt={image.title ?? ''}
-                                  className="object-cover w-full h-full"
-                                  loading="lazy"
-                                  onError={(e) => {
-                                    console.error('Image failed to load:', normalizedSrc);
-                                    console.error('Error:', e);
-                                  }}
-                                />
-                              );
-                            })()
-                          ) : (
-                            console.warn('Missing/invalid src', image), 
-                            <div className="w-full h-full bg-gray-300 flex items-center justify-center text-gray-600">Missing Image</div>
-                          )}
+                          {(() => {
+                            const s = normalizeImageSrc(image?.src);
+                            if (!s) {
+                              console.warn('Missing/invalid src', image);
+                              return <div className="w-full h-full bg-gray-300 flex items-center justify-center text-gray-600">Missing Image</div>;
+                            }
+                            return (
+                              <img
+                                src={s}
+                                alt={image.title ?? ''}
+                                className="object-cover w-full h-full"
+                                loading="lazy"
+                                onError={(e) => {
+                                  console.error('Image failed to load:', s);
+                                  console.error('Error:', e);
+                                }}
+                              />
+                            );
+                          })()}
                           <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent" />
                           
                           {/* Image border for better definition */}
