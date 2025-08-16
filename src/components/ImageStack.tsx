@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { motion, AnimatePresence, PanInfo } from 'framer-motion';
 import Image from 'next/image';
+import { normalizeImagePath, isValidImagePath } from '@/lib/image-utils';
 
 type ImageData = {
   id: number;
@@ -104,14 +105,20 @@ function getAllImagesFromCategory(category: Category): ImageData[] {
   return category.images || [];
 }
 
-// Optimized image component with Next.js Image
+// Optimized image component with Next.js Image and safe path handling
 const Img = ({ src, alt }: { src: string; alt: string }) => {
   if (!src || typeof src !== 'string' || !src.trim()) {
     console.warn('Missing src for image', { src, alt });
     return <div className="w-full h-full relative bg-gray-300 flex items-center justify-center text-gray-600">Missing Image</div>;
   }
 
-  const normalizedSrc = src.startsWith('/') ? src : `/${src}`;
+  // Use the safe path normalization utility
+  const normalizedSrc = normalizeImagePath(src);
+  
+  if (!isValidImagePath(normalizedSrc)) {
+    console.warn('Invalid image path after normalization:', { original: src, normalized: normalizedSrc });
+    return <div className="w-full h-full relative bg-gray-300 flex items-center justify-center text-gray-600">Invalid Image Path</div>;
+  }
   
   return (
     <div className="w-full h-full relative">
