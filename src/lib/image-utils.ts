@@ -52,23 +52,23 @@ export function normalizeImagePath(src: string): string {
     console.warn('Failed to decode image src:', src);
   }
 
-  // Clean up the path
+  // Clean up the path - remove any leading/trailing whitespace
   let clean = decoded.trim();
   
-  // Remove any leading/trailing whitespace and normalize slashes
-  clean = clean.replace(/^\/+/, '').replace(/\/+$/, '');
+  // Remove any leading slashes and normalize
+  clean = clean.replace(/^\/+/, '');
   
-  // If it's already a full path starting with /images/, use it as-is
+  // If it's already a full path starting with images/, use it as-is
   if (clean.startsWith('images/')) {
     return `/${clean}`;
   }
   
-  // If it's just a filename, prepend /images/
+  // If it's just a filename, prepend images/
   if (!clean.includes('/')) {
     return `/images/${clean}`;
   }
   
-  // If it doesn't start with /images/ but has a path, prepend /images/
+  // If it doesn't start with images/ but has a path, prepend images/
   if (!clean.startsWith('images/')) {
     return `/images/${clean}`;
   }

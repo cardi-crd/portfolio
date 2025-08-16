@@ -2,8 +2,7 @@
 const nextConfig = {
   experimental: { optimizeCss: false },
   images: {
-    unoptimized: false,
-    domains: ['cardi.pics', 'www.cardi.pics'],
+    unoptimized: true,
   },
 };
 
