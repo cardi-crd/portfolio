@@ -2,7 +2,6 @@
 
 import { useState } from 'react'
 import { motion, AnimatePresence, PanInfo } from 'framer-motion'
-import Image from 'next/image'
 import { normalizeImagePath, isValidImagePath } from '@/lib/image-utils'
 
 interface ImageData {
@@ -439,17 +438,11 @@ function PhotoStack({ stackKey, images, title }: StackProps) {
                         return <div className="w-full h-full bg-gray-300 flex items-center justify-center text-gray-600">Invalid Image Path</div>;
                       }
                       return (
-                        <Image
+                        <img
                           src={normalizedSrc}
                           alt={image.title ?? ''}
-                          fill
-                          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                          className="object-cover"
-                          priority={false}
+                          className="object-cover w-full h-full"
                           loading="lazy"
-                          quality={85}
-                          placeholder="blur"
-                          blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAAIAAoDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAhEAACAQMDBQAAAAAAAAAAAAABAgMABAUGIWGRkqGx0f/EABUBAQEAAAAAAAAAAAAAAAAAAAMF/8QAGhEAAgIDAAAAAAAAAAAAAAAAAAECEgMRkf/aAAwDAQACEQMRAD8AltJagyeH0AthI5xdrLcNM91BF5pX2HaH9bcfaSXWGaRmknyJckliyjqTzSlT54b6bk+h0R//2Q=="
                           onError={(e) => {
                             console.error('Image failed to load:', normalizedSrc);
                             console.error('Error:', e);
@@ -512,17 +505,11 @@ function PhotoStack({ stackKey, images, title }: StackProps) {
                       return <div className="w-full h-full bg-gray-300 flex items-center justify-center text-gray-600">Invalid Image Path</div>;
                     }
                     return (
-                      <Image
+                      <img
                         src={normalizedSrc}
                         alt={images[currentIndex].title ?? ''}
-                        fill
-                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                        className="object-cover"
-                        priority={false}
+                        className="object-cover w-full h-full"
                         loading="lazy"
-                        quality={85}
-                        placeholder="blur"
-                        blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAAIAAoDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAhEAACAQMDBQAAAAAAAAAAAAABAgMABAUGIWGRkqGx0f/EABUBAQEAAAAAAAAAAAAAAAAAAAMF/8QAGhEAAgIDAAAAAAAAAAAAAAAAAAECEgMRkf/aAAwDAQACEQMRAD8AltJagyeH0AthI5xdrLcNM91BF5pX2HaH9bcfaSXWGaRmknyJckliyjqTzSlT54b6bk+h0R//2Q=="
                         onError={(e) => {
                           console.error('Image failed to load:', normalizedSrc);
                           console.error('Error:', e);
@@ -608,17 +595,11 @@ function PhotoStack({ stackKey, images, title }: StackProps) {
                     return <div className="w-full h-full bg-gray-300 flex items-center justify-center text-gray-600">Invalid Image Path</div>;
                   }
                   return (
-                    <Image
+                    <img
                       src={normalizedSrc}
                       alt={images[currentIndex].title ?? ''}
-                      fill
-                      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 80vw, 60vw"
-                      className="object-contain"
-                      priority={true}
+                      className="object-contain w-full h-full"
                       loading="eager"
-                      quality={95}
-                      placeholder="blur"
-                      blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAAIAAoDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAhEAACAQMDBQAAAAAAAAAAAAABAgMABAUGIWGRkqGx0f/EABUBAQEAAAAAAAAAAAAAAAAAAAMF/8QAGhEAAgIDAAAAAAAAAAAAAAAAAAECEgMRkf/aAAwDAQACEQMRAD8AltJagyeH0AthI5xdrLcNM91BF5pX2HaH9bcfaSXWGaRmknyJckliyjqTzSlT54b6bk+h0R//2Q=="
                       onClick={(e) => e.stopPropagation()}
                       onError={(e) => {
                         console.error('Image failed to load:', normalizedSrc);
@@ -845,17 +826,11 @@ export default function ImageStack() {
                                 return <div className="w-full h-full bg-gray-300 flex items-center justify-center text-gray-600">Invalid Image Path</div>;
                               }
                               return (
-                                <Image
+                                <img
                                   src={normalizedSrc}
                                   alt={image.title ?? ''}
-                                  fill
-                                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                                  className="object-cover"
-                                  priority={false}
+                                  className="object-cover w-full h-full"
                                   loading="lazy"
-                                  quality={85}
-                                  placeholder="blur"
-                                  blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAAIAAoDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAhEAACAQMDBQAAAAAAAAAAAAABAgMABAUGIWGRkqGx0f/EABUBAQEAAAAAAAAAAAAAAAAAAAMF/8QAGhEAAgIDAAAAAAAAAAAAAAAAAAECEgMRkf/aAAwDAQACEQMRAD8AltJagyeH0AthI5xdrLcNM91BF5pX2HaH9bcfaSXWGaRmknyJckliyjqTzSlT54b6bk+h0R//2Q=="
                                   onError={(e) => {
                                     console.error('Image failed to load:', normalizedSrc);
                                     console.error('Error:', e);
