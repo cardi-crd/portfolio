@@ -175,6 +175,12 @@ function getPreviewImagesFromCategory(category: Category): ImageData[] {
   return allImages.slice(0, 6) // Show first 6 images in preview
 }
 
+// Create photoStacks object from categories
+const photoStacks: Record<string, ImageData[]> = {}
+categories.forEach(category => {
+  photoStacks[category.key] = getAllImagesFromCategory(category)
+})
+
 interface StackProps {
   stackKey: string
   images: ImageData[]
