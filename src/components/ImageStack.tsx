@@ -204,6 +204,21 @@ export default function ImageStack() {
   const [viewingPhoto, setViewingPhoto] = useState<{ images: ImageData[]; currentIndex: number } | null>(null);
   const [albumPhotoIndex, setAlbumPhotoIndex] = useState(0);
 
+  // Lock scroll when gallery is open
+  useEffect(() => {
+    const isGalleryOpen = selectedCategory && !zoomedCategoryKey && !viewingPhoto;
+    
+    if (isGalleryOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'unset';
+    }
+
+    return () => {
+      document.body.style.overflow = 'unset';
+    };
+  }, [selectedCategory, zoomedCategoryKey, viewingPhoto]);
+
   const category = categories.find(c => c.key === selectedCategory) || null;
   const sub = category?.subCategories?.find(s => s.key === selectedSubCategory) || null;
 
@@ -259,10 +274,26 @@ export default function ImageStack() {
       setAlbumPhotoIndex(0);
     }
   };
-  const closeAlbumZoom = () => setZoomedCategoryKey(null);
+  const closeAlbumZoom = () => {
+    console.log('Closing album zoom');
+    setZoomedCategoryKey(null);
+    setAlbumPhotoIndex(0);
+  };
+  
   const openAlbum = (key: string) => {
+    console.log('Opening album:', key);
     setSelectedCategory(key);
     setZoomedCategoryKey(null);
+    setAlbumPhotoIndex(0);
+  };
+
+  const resetToHomepage = () => {
+    console.log('Resetting to homepage');
+    setSelectedCategory(null);
+    setSelectedSubCategory(null);
+    setZoomedCategoryKey(null);
+    setViewingPhoto(null);
+    setAlbumPhotoIndex(0);
   };
 
   return (
@@ -283,9 +314,18 @@ export default function ImageStack() {
                    {/* Album card with stacked preview */}
                    <motion.button
                      layoutId={layoutId}
-                     onClick={() => openAlbumZoom(cat.key)}
-                     onTouchStart={() => openAlbumZoom(cat.key)}
-                     className="w-full aspect-[3/4] rounded-2xl md:rounded-3xl overflow-hidden bg-white/5 block touch-manipulation"
+                     onClick={(e) => {
+                       e.preventDefault();
+                       e.stopPropagation();
+                       console.log('Album card clicked:', cat.key);
+                       openAlbumZoom(cat.key);
+                     }}
+                     onTouchStart={(e) => {
+                       e.preventDefault();
+                       console.log('Album card touched:', cat.key);
+                       openAlbumZoom(cat.key);
+                     }}
+                     className="w-full aspect-[3/4] rounded-2xl md:rounded-3xl overflow-hidden bg-white/5 block touch-manipulation cursor-pointer"
                      whileHover={{ scale: 1.02 }}
                      whileTap={{ scale: 0.98 }}
                      transition={{ duration: 0.2, ease: "easeOut" }}
@@ -315,7 +355,7 @@ export default function ImageStack() {
         <>
           <div className="w-full max-w-6xl mb-4 flex items-center">
             <button
-              onClick={() => setSelectedCategory(null)}
+              onClick={resetToHomepage}
               className="text-white/70 hover:text-white"
             >
               ← Back
@@ -350,68 +390,72 @@ export default function ImageStack() {
 
       {/* SUBCATEGORY GRID OF PHOTOS (full browse) */}
       {selectedCategory && selectedSubCategory && sub && (
-        <>
-          <div className="w-full max-w-6xl mb-4 flex items-center justify-between">
-            <button
-              onClick={() => setSelectedSubCategory(null)}
-              className="text-white/70 hover:text-white"
-            >
-              ← Back
-            </button>
-            <button
-              onClick={() => { setSelectedSubCategory(null); setSelectedCategory(null); }}
-              className="text-white/70 hover:text-white"
-            >
-              Categories
-            </button>
+        <div className="fixed inset-0 bg-black z-30 overflow-y-auto">
+          <div className="min-h-full px-4 py-4 md:py-6 flex flex-col items-center">
+            <div className="w-full max-w-6xl mb-4 flex items-center justify-between">
+              <button
+                onClick={() => setSelectedSubCategory(null)}
+                className="text-white/70 hover:text-white"
+              >
+                ← Back
+              </button>
+              <button
+                onClick={resetToHomepage}
+                className="text-white/70 hover:text-white"
+              >
+                Categories
+              </button>
+            </div>
+            <h2 className="text-2xl font-semibold text-white mb-4 md:mb-6">{sub.title}</h2>
+            <div className="grid [grid-template-columns:repeat(auto-fit,minmax(220px,1fr))] gap-4 md:gap-6 w-full max-w-screen-2xl px-4">
+              {(() => {
+                console.log('Rendering subcategory grid for:', sub.title);
+                console.log('Number of images:', sub.images.length);
+                console.log('First few images:', sub.images.slice(0, 3));
+                return sub.images.map((img, index) => (
+                  <button
+                    key={img.id}
+                    onClick={() => setViewingPhoto({ images: sub.images, currentIndex: index })}
+                    onTouchStart={() => setViewingPhoto({ images: sub.images, currentIndex: index })}
+                    className="aspect-[4/5] rounded-xl overflow-hidden bg-white/5 hover:scale-105 transition-transform relative touch-manipulation"
+                    style={{ minHeight: '200px' }}
+                  >
+                    <Img src={img.src} alt={img.title} />
+                  </button>
+                ));
+              })()}
+            </div>
           </div>
-          <h2 className="text-2xl font-semibold text-white mb-4 md:mb-6">{sub.title}</h2>
-          <div className="grid [grid-template-columns:repeat(auto-fit,minmax(220px,1fr))] gap-4 md:gap-6 w-full max-w-screen-2xl px-4">
-            {(() => {
-              console.log('Rendering subcategory grid for:', sub.title);
-              console.log('Number of images:', sub.images.length);
-              console.log('First few images:', sub.images.slice(0, 3));
-              return sub.images.map((img, index) => (
-                <button
-                  key={img.id}
-                  onClick={() => setViewingPhoto({ images: sub.images, currentIndex: index })}
-                  onTouchStart={() => setViewingPhoto({ images: sub.images, currentIndex: index })}
-                  className="aspect-[4/5] rounded-xl overflow-hidden bg-white/5 hover:scale-105 transition-transform relative touch-manipulation"
-                  style={{ minHeight: '200px' }}
-                >
-                  <Img src={img.src} alt={img.title} />
-                </button>
-              ));
-            })()}
-          </div>
-        </>
+        </div>
       )}
 
       {/* INDIVIDUAL CATEGORY GRID OF PHOTOS (for categories without subcategories) */}
       {selectedCategory && category && !category.hasSubCategories && (
-        <>
-          <div className="w-full max-w-6xl mb-4 flex items-center">
-            <button
-              onClick={() => setSelectedCategory(null)}
-              className="text-white/70 hover:text-white"
-            >
-              ← Back to Categories
-            </button>
-          </div>
-          <h2 className="text-2xl font-semibold text-white mb-4 md:mb-6">{category.title}</h2>
-          <div className="grid [grid-template-columns:repeat(auto-fit,minmax(220px,1fr))] gap-4 md:gap-6 w-full max-w-screen-2xl px-4">
-            {category.images!.map((img, index) => (
+        <div className="fixed inset-0 bg-black z-30 overflow-y-auto">
+          <div className="min-h-full px-4 py-4 md:py-6 flex flex-col items-center">
+            <div className="w-full max-w-6xl mb-4 flex items-center">
               <button
-                key={img.id}
-                onClick={() => setViewingPhoto({ images: category.images!, currentIndex: index })}
-                onTouchStart={() => setViewingPhoto({ images: category.images!, currentIndex: index })}
-                className="aspect-[4/5] rounded-xl overflow-hidden bg-white/5 hover:scale-105 transition-transform touch-manipulation"
+                onClick={resetToHomepage}
+                className="text-white/70 hover:text-white"
               >
-                <Img src={img.src} alt={img.title} />
+                ← Back to Categories
               </button>
-            ))}
             </div>
-        </>
+            <h2 className="text-2xl font-semibold text-white mb-4 md:mb-6">{category.title}</h2>
+            <div className="grid [grid-template-columns:repeat(auto-fit,minmax(220px,1fr))] gap-4 md:gap-6 w-full max-w-screen-2xl px-4">
+              {category.images!.map((img, index) => (
+                <button
+                  key={img.id}
+                  onClick={() => setViewingPhoto({ images: category.images!, currentIndex: index })}
+                  onTouchStart={() => setViewingPhoto({ images: category.images!, currentIndex: index })}
+                  className="aspect-[4/5] rounded-xl overflow-hidden bg-white/5 hover:scale-105 transition-transform touch-manipulation"
+                >
+                  <Img src={img.src} alt={img.title} />
+                </button>
+              ))}
+            </div>
+          </div>
+        </div>
       )}
 
       {/* ZOOM OVERLAY (clicking an album morphs/zooms forward) */}
@@ -425,6 +469,7 @@ export default function ImageStack() {
                animate={{ opacity: 1 }}
                exit={{ opacity: 0 }}
                transition={{ duration: 0.2 }}
+               onClick={closeAlbumZoom}
              />
              
              {/* Enlarged card that shares layoutId with the grid card for a smooth morph */}
