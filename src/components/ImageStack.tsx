@@ -105,7 +105,7 @@ function getAllImagesFromCategory(category: Category): ImageData[] {
 }
 
 // Optimized image component with Next.js Image and safe path handling
-const Img = ({ src, alt }: { src: string; alt: string }) => {
+const Img = ({ src, alt, priority = false }: { src: string; alt: string; priority?: boolean }) => {
   const s = normalizeImageSrc(src);
   if (!s) {
     console.warn('Missing/invalid src', { src, alt });
@@ -118,7 +118,8 @@ const Img = ({ src, alt }: { src: string; alt: string }) => {
         src={s}
         alt={alt ?? ''}
         className="object-cover w-full h-full"
-        loading="lazy"
+        loading={priority ? "eager" : "lazy"}
+        decoding="async"
         onError={(e) => {
           console.error('Image failed to load:', s);
           console.error('Error:', e);
@@ -131,6 +132,20 @@ const Img = ({ src, alt }: { src: string; alt: string }) => {
 // Stacked preview component with mode support
 function StackedPreview({ images, mode = 'stacked' }: { images: ImageData[]; mode?: 'stacked' | 'flat' }) {
   const preview = images.slice(0, 6);
+  
+  // Preload the first few images for faster album preview
+  useEffect(() => {
+    preview.slice(0, 3).forEach(img => {
+      const s = normalizeImageSrc(img.src);
+      if (s) {
+        const link = document.createElement('link');
+        link.rel = 'preload';
+        link.as = 'image';
+        link.href = s;
+        document.head.appendChild(link);
+      }
+    });
+  }, [preview]);
   
   if (mode === 'flat') {
     // Flat mode: only top image visible, no rotation/offset
@@ -145,7 +160,7 @@ function StackedPreview({ images, mode = 'stacked' }: { images: ImageData[]; mod
               zIndex: preview.length - index
             }}
           >
-            <Img src={img.src} alt={img.title} />
+            <Img src={img.src} alt={img.title} priority={index === 0} />
           </div>
         ))}
       </div>
