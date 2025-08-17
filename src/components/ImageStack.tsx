@@ -270,7 +270,7 @@ export default function ImageStack() {
       {/* ALBUM GRID (landing) - Fluid responsive grid */}
       {!selectedCategory && (
         <>
-          <h2 className="text-2xl font-semibold text-white mb-4 md:mb-6">Choose Your Story</h2>
+          <h2 className="text-2xl font-semibold text-white mb-4 md:mb-6">Ricardo "Cardi" Mendez</h2>
           <div className="grid [grid-template-columns:repeat(auto-fit,minmax(220px,1fr))] gap-8 md:gap-10 w-full max-w-screen-2xl px-4">
             {categories.map(cat => {
               const imgs = getAllImagesFromCategory(cat);
