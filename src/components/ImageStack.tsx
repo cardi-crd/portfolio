@@ -98,7 +98,9 @@ const categories: Category[] = [
       { id: 5, src: '/images/brandwork/savage.png', title: 'Savage x Fenty', category: 'Brand Work' },
       { id: 6, src: '/images/brandwork/cristianxmakeup.png', title: 'Coachella w/ NYX cosmetics - @Nyane x @CristianDennis', category: 'Brand Work' },
       { id: 7, src: '/images/brandwork/-fatoil.png', title: 'Coachella x NYX Cosmetics - @ArlieKontic', category: 'Brand Work' },
-      { id: 8, src: '/images/brandwork/-nickinana.png', title: 'Coachella x NYX Cosmetics - @Nikki.Bruner x @NanaBruner', category: 'Brand Work' }
+      { id: 8, src: '/images/brandwork/-nickinana.png', title: 'Coachella x NYX Cosmetics - @Nikki.Bruner x @NanaBruner', category: 'Brand Work' },
+      { id: 9, src: '/images/brandwork/-rachel.png', title: 'Coachella x NYX Cosmetics - @Rachel.OCool', category: 'Brand Work' },
+      { id: 10, src: '/images/brandwork/-rachel2.png', title: 'Coachella x NYX Cosmetics - @Rachel.OCool', category: 'Brand Work' }
     ] 
   }
 ];
