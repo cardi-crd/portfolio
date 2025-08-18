@@ -7,6 +7,7 @@ import { normalizeImageSrc } from '@/lib/normalizeImageSrc';
 import { AlbumGrid } from './AlbumGrid';
 import { OptimizedImage } from './OptimizedImage';
 import { imagePreloader } from '@/lib/imagePreloader';
+import { useScrollLock } from '@/lib/useScrollLock';
 
 type ImageData = {
   id: number;
@@ -201,20 +202,9 @@ export default function ImageStack() {
   const [albumPhotoIndex, setAlbumPhotoIndex] = useState(0);
   const [renderKey, setRenderKey] = useState(0); // Force re-render key
 
-  // Lock scroll when gallery is open
-  useEffect(() => {
-    const isGalleryOpen = selectedCategory && !zoomedCategoryKey && !viewingPhoto;
-    
-    if (isGalleryOpen) {
-      document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = 'unset';
-    }
-
-    return () => {
-      document.body.style.overflow = 'unset';
-    };
-  }, [selectedCategory, zoomedCategoryKey, viewingPhoto]);
+  // Use robust scroll lock for album/lightbox states
+  const isAlbumOpen = !!(selectedCategory || zoomedCategoryKey || viewingPhoto);
+  useScrollLock(isAlbumOpen);
 
   // Cleanup effect to ensure proper state management
   useEffect(() => {

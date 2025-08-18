@@ -17,3 +17,8 @@
 .opacity-0, .invisible {
   pointer-events: none !important;
 }
+
+/* Avoid browser "rubber band" scrolling leaking through when locked */
+.scroll-locked {
+  overscroll-behavior: none;
+}

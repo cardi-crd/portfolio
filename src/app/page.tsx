@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { usePathname } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import ImageStack from '@/components/ImageStack';
+import { useScrollLock } from '@/lib/useScrollLock';
 
 export default function Home() {
   const [isPhoneMenuOpen, setIsPhoneMenuOpen] = useState(false);
@@ -16,16 +17,8 @@ export default function Home() {
     document.body.style.overflow = '';
   }, [pathname]);
 
-  // Lock/unlock body when menu toggles
-  useEffect(() => {
-    if (isPhoneMenuOpen) {
-      document.body.classList.add('no-scroll');
-      document.body.style.overflow = 'hidden';
-    } else {
-      document.body.classList.remove('no-scroll');
-      document.body.style.overflow = '';
-    }
-  }, [isPhoneMenuOpen]);
+  // Use robust scroll lock for phone menu
+  useScrollLock(isPhoneMenuOpen);
   
   const phoneNumber = '+1 (520) 609-6912'
   
