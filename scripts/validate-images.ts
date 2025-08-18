@@ -73,7 +73,11 @@ const categories = [
       { id: 7, src: '/images/brandwork/-fatoil.png', title: 'Coachella x NYX Cosmetics - @ArlieKontic', category: 'Brand Work' },
       { id: 8, src: '/images/brandwork/-nickinana.png', title: 'Coachella x NYX Cosmetics - @Nikki.Bruner x @NanaBruner', category: 'Brand Work' },
       { id: 9, src: '/images/brandwork/-rachel.png', title: 'Coachella x NYX Cosmetics - @Rachel.OCool', category: 'Brand Work' },
-      { id: 10, src: '/images/brandwork/-rachel2.png', title: 'Coachella x NYX Cosmetics - @Rachel.OCool', category: 'Brand Work' }
+      { id: 10, src: '/images/brandwork/-rachel2.png', title: 'Coachella x NYX Cosmetics - @Rachel.OCool', category: 'Brand Work' },
+      { id: 11, src: '/images/brandwork/clarins1.png', title: 'Clarins Beauty Icons Event 2025', category: 'Brand Work' },
+      { id: 12, src: '/images/brandwork/clarins2.png', title: 'Clarins Beauty Icons Event 2025', category: 'Brand Work' },
+      { id: 13, src: '/images/brandwork/clarins4.png', title: 'Clarins Beauty Icons Event 2025', category: 'Brand Work' },
+      { id: 14, src: '/images/brandwork/clarinsnara.png', title: 'Clarins Beauty Icons Event 2025 - @ArlieKontic x @NaraAziza (Nara Smith)', category: 'Brand Work' }
     ] 
   }
 ];
