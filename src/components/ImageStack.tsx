@@ -5,6 +5,8 @@ import { motion, AnimatePresence, PanInfo } from 'framer-motion';
 import Image from 'next/image';
 import { normalizeImageSrc } from '@/lib/normalizeImageSrc';
 import { AlbumGrid } from './AlbumGrid';
+import { OptimizedImage } from './OptimizedImage';
+import { imagePreloader } from '@/lib/imagePreloader';
 
 type ImageData = {
   id: number;
@@ -105,24 +107,17 @@ function getAllImagesFromCategory(category: Category): ImageData[] {
   return category.images || [];
 }
 
-// Optimized image component with Next.js Image and safe path handling
+// Optimized image component with preloading and lazy loading
 const Img = ({ src, alt, priority = false }: { src: string; alt: string; priority?: boolean }) => {
-  const s = normalizeImageSrc(src);
-  if (!s) {
-    console.warn('Missing/invalid src', { src, alt });
-    return <div className="w-full h-full relative bg-gray-300 flex items-center justify-center text-gray-600">Missing Image</div>;
-  }
-  
   return (
     <div className="w-full h-full relative">
-      <img
-        src={s}
+      <OptimizedImage
+        src={src}
         alt={alt ?? ''}
         className="object-cover w-full h-full"
-        loading={priority ? "eager" : "lazy"}
-        decoding="async"
+        priority={priority}
         onError={(e) => {
-          console.error('Image failed to load:', s);
+          console.error('Image failed to load:', src);
           console.error('Error:', e);
         }}
       />
@@ -277,11 +272,21 @@ export default function ImageStack() {
       // For categories with subcategories, navigate to subcategory selection
       console.log('Opening subcategory selection for:', key);
       setSelectedCategory(key);
+      
+      // Preload all subcategory images
+      if (category.subCategories) {
+        category.subCategories.forEach(sub => {
+          imagePreloader.preloadCategory(sub);
+        });
+      }
     } else {
       // For categories without subcategories, open zoom overlay
       console.log('Opening zoom overlay for:', key);
       setZoomedCategoryKey(key);
       setAlbumPhotoIndex(0);
+      
+      // Preload images for the category
+      imagePreloader.preloadCategory(category);
     }
   };
   const closeAlbumZoom = () => {
@@ -295,6 +300,12 @@ export default function ImageStack() {
     setSelectedCategory(key);
     setZoomedCategoryKey(null);
     setAlbumPhotoIndex(0);
+    
+    // Preload images for the selected category
+    const category = categories.find(c => c.key === key);
+    if (category) {
+      imagePreloader.preloadCategory(category);
+    }
   };
 
   const resetToHomepage = () => {
@@ -360,10 +371,16 @@ export default function ImageStack() {
                   console.log('Clicking subcategory:', sc.key);
                   console.log('Subcategory data:', sc);
                   setSelectedSubCategory(sc.key);
+                  
+                  // Preload images for the selected subcategory
+                  imagePreloader.preloadCategory(sc);
                 }}
                 onTouchStart={() => {
                   console.log('Touch subcategory:', sc.key);
                   setSelectedSubCategory(sc.key);
+                  
+                  // Preload images for the selected subcategory
+                  imagePreloader.preloadCategory(sc);
                 }}
                 className="text-left group min-w-[260px] touch-manipulation"
               >
@@ -405,8 +422,24 @@ export default function ImageStack() {
                 return sub.images.map((img, index) => (
                   <button
                     key={img.id}
-                    onClick={() => setViewingPhoto({ images: sub.images, currentIndex: index })}
-                    onTouchStart={() => setViewingPhoto({ images: sub.images, currentIndex: index })}
+                    onClick={() => {
+                      setViewingPhoto({ images: sub.images, currentIndex: index });
+                      
+                      // Preload next few images for smooth navigation
+                      const nextImages = sub.images.slice(index + 1, index + 4);
+                      nextImages.forEach(img => {
+                        imagePreloader.preloadImage(img.src);
+                      });
+                    }}
+                    onTouchStart={() => {
+                      setViewingPhoto({ images: sub.images, currentIndex: index });
+                      
+                      // Preload next few images for smooth navigation
+                      const nextImages = sub.images.slice(index + 1, index + 4);
+                      nextImages.forEach(img => {
+                        imagePreloader.preloadImage(img.src);
+                      });
+                    }}
                     className="aspect-[4/5] rounded-xl overflow-hidden bg-white/5 hover:scale-105 transition-transform relative touch-manipulation"
                     style={{ minHeight: '200px' }}
                   >
@@ -436,8 +469,24 @@ export default function ImageStack() {
               {category.images!.map((img, index) => (
                 <button
                   key={img.id}
-                  onClick={() => setViewingPhoto({ images: category.images!, currentIndex: index })}
-                  onTouchStart={() => setViewingPhoto({ images: category.images!, currentIndex: index })}
+                  onClick={() => {
+                    setViewingPhoto({ images: category.images!, currentIndex: index });
+                    
+                    // Preload next few images for smooth navigation
+                    const nextImages = category.images!.slice(index + 1, index + 4);
+                    nextImages.forEach(img => {
+                      imagePreloader.preloadImage(img.src);
+                    });
+                  }}
+                  onTouchStart={() => {
+                    setViewingPhoto({ images: category.images!, currentIndex: index });
+                    
+                    // Preload next few images for smooth navigation
+                    const nextImages = category.images!.slice(index + 1, index + 4);
+                    nextImages.forEach(img => {
+                      imagePreloader.preloadImage(img.src);
+                    });
+                  }}
                   className="aspect-[4/5] rounded-xl overflow-hidden bg-white/5 hover:scale-105 transition-transform touch-manipulation"
                 >
                   <Img src={img.src} alt={img.title} />
