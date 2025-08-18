@@ -68,7 +68,10 @@ const categories = [
       { id: 2, src: '/images/brandwork/arlierecess2.jpg', title: 'Recess Mood Drinks', category: 'Brand Work' },
       { id: 3, src: '/images/brandwork/bbc.JPG', title: 'Blue Bottle Coffee x Samara Origins', category: 'Brand Work' },
       { id: 4, src: '/images/brandwork/bbc2.JPG', title: 'Blue Bottle Coffee x Samara Origins', category: 'Brand Work' },
-      { id: 5, src: '/images/brandwork/savage.png', title: 'Savage x Fenty', category: 'Brand Work' }
+      { id: 5, src: '/images/brandwork/savage.png', title: 'Savage x Fenty', category: 'Brand Work' },
+      { id: 6, src: '/images/brandwork/cristianxmakeup.png', title: 'Coachella w/ NYX cosmetics - @Nyane x @CristianDennis', category: 'Brand Work' },
+      { id: 7, src: '/images/brandwork/-fatoil.png', title: 'Coachella x NYX Cosmetics - @ArlieKontic', category: 'Brand Work' },
+      { id: 8, src: '/images/brandwork/-nickinana.png', title: 'Coachella x NYX Cosmetics - @Nikki.Bruner x @NanaBruner', category: 'Brand Work' }
     ] 
   }
 ];
