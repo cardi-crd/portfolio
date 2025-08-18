@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { motion, AnimatePresence, PanInfo } from 'framer-motion';
 import Image from 'next/image';
 import { normalizeImageSrc } from '@/lib/normalizeImageSrc';
+import { AlbumGrid } from './AlbumGrid';
 
 type ImageData = {
   id: number;
@@ -203,6 +204,7 @@ export default function ImageStack() {
   const [zoomedCategoryKey, setZoomedCategoryKey] = useState<string | null>(null);
   const [viewingPhoto, setViewingPhoto] = useState<{ images: ImageData[]; currentIndex: number } | null>(null);
   const [albumPhotoIndex, setAlbumPhotoIndex] = useState(0);
+  const [renderKey, setRenderKey] = useState(0); // Force re-render key
 
   // Lock scroll when gallery is open
   useEffect(() => {
@@ -218,6 +220,14 @@ export default function ImageStack() {
       document.body.style.overflow = 'unset';
     };
   }, [selectedCategory, zoomedCategoryKey, viewingPhoto]);
+
+  // Cleanup effect to ensure proper state management
+  useEffect(() => {
+    return () => {
+      // Cleanup on component unmount
+      document.body.style.overflow = 'unset';
+    };
+  }, []);
 
   const category = categories.find(c => c.key === selectedCategory) || null;
   const sub = category?.subCategories?.find(s => s.key === selectedSubCategory) || null;
@@ -289,55 +299,35 @@ export default function ImageStack() {
 
   const resetToHomepage = () => {
     console.log('Resetting to homepage');
+    // Force a complete state reset
     setSelectedCategory(null);
     setSelectedSubCategory(null);
     setZoomedCategoryKey(null);
     setViewingPhoto(null);
     setAlbumPhotoIndex(0);
+    
+    // Force re-render by updating a key
+    setRenderKey(prev => prev + 1);
+    
+    // Ensure scroll is restored
+    document.body.style.overflow = 'unset';
+    
+    setTimeout(() => {
+      console.log('State reset complete');
+    }, 100);
   };
 
   return (
-    <div className="w-full min-h-screen px-4 py-4 md:py-6 flex flex-col items-center">
+    <div key={renderKey} className="w-full min-h-screen px-4 py-4 md:py-6 flex flex-col items-center">
       {/* ALBUM GRID (landing) - Fluid responsive grid */}
       {!selectedCategory && (
         <>
           <h2 className="text-2xl font-semibold text-white mb-4 md:mb-6">Ricardo "Cardi" Mendez</h2>
-          <div className="grid [grid-template-columns:repeat(auto-fit,minmax(220px,1fr))] gap-8 md:gap-10 w-full max-w-screen-2xl px-4">
-            {categories.map(cat => {
-              const imgs = getAllImagesFromCategory(cat);
-              const layoutId = `album-card-${cat.key}`;
-              
-            return (
-                 <div key={cat.key} className="text-left group min-w-[220px]">
-                   <h3 className="text-white/90 font-semibold mb-2">{cat.title}</h3>
-                   
-                   {/* Album card with stacked preview */}
-                   <motion.button
-                     layoutId={layoutId}
-                     onClick={(e) => {
-                       e.preventDefault();
-                       e.stopPropagation();
-                       console.log('Album card clicked:', cat.key);
-                       openAlbumZoom(cat.key);
-                     }}
-                     onTouchStart={(e) => {
-                       e.preventDefault();
-                       console.log('Album card touched:', cat.key);
-                       openAlbumZoom(cat.key);
-                     }}
-                     className="w-full aspect-[3/4] rounded-2xl md:rounded-3xl overflow-hidden bg-white/5 block touch-manipulation cursor-pointer"
-                     whileHover={{ scale: 1.02 }}
-                     whileTap={{ scale: 0.98 }}
-                     transition={{ duration: 0.2, ease: "easeOut" }}
-                   >
-                     <StackedPreview images={imgs} mode="stacked" />
-                   </motion.button>
-                   
-                   <p className="text-white/60 text-sm mt-2">{imgs.length} photos</p>
-                 </div>
-               );
-            })}
-          </div>
+          <AlbumGrid 
+            categories={categories} 
+            onAlbumClick={openAlbumZoom}
+            renderKey={renderKey}
+          />
           
           {/* Cardimediakit Full Screen Image - Only on Home Page */}
           <section className="w-full mt-16">
