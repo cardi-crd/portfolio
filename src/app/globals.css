@@ -1,3 +1,8 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Helper to ensure invisible full-screen elements can't block clicks */
+.no-pointer-events {
+  pointer-events: none !important;
+}

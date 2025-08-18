@@ -221,8 +221,60 @@ export default function ImageStack() {
     return () => {
       // Cleanup on component unmount
       document.body.style.overflow = 'unset';
+      document.body.classList.remove('no-scroll', 'modal-open');
+      
+      // Remove any leftover overlays
+      document
+        .querySelectorAll(
+          [
+            '.lightbox-portal',
+            '.lightbox-backdrop',
+            '.modal-backdrop',
+            '.yarl__portal',
+            '.pswp',
+            '.swiper-aria-live',
+            '.lenis-overlay',
+          ].join(',')
+        )
+        .forEach((n) => n.remove());
     };
   }, []);
+
+  // Cleanup effect for viewingPhoto and zoomedCategoryKey states
+  useEffect(() => {
+    return () => {
+      try {
+        // If you create a viewer/swiper/lightbox instance, assign it to 'inst'
+        let inst: any = undefined;
+        // inst = createPhotoSwipeOrYARLOrSwiper(...);
+
+        // Cleanup any instances
+        try { inst?.destroy?.(); } catch {}
+        
+        // Remove common lightbox overlays
+        document
+          .querySelectorAll('.pswp, .yarl__portal, .lightbox-portal, .lightbox-backdrop')
+          .forEach((n) => n.remove());
+        
+        // Reset body styles
+        document.body.style.overflow = '';
+        document.body.classList.remove('no-scroll', 'modal-open');
+      } catch (error) {
+        console.warn('Cleanup error:', error);
+      }
+    };
+  }, [viewingPhoto, zoomedCategoryKey]);
+
+  // Cleanup overlays when viewingPhoto or zoomedCategoryKey change
+  useEffect(() => {
+    return () => {
+      // If component unmounts while viewing photos or zoomed, clean up
+      if (viewingPhoto || zoomedCategoryKey) {
+        document.body.style.overflow = 'unset';
+        document.body.classList.remove('no-scroll', 'modal-open');
+      }
+    };
+  }, [viewingPhoto, zoomedCategoryKey]);
 
   const category = categories.find(c => c.key === selectedCategory) || null;
   const sub = category?.subCategories?.find(s => s.key === selectedSubCategory) || null;

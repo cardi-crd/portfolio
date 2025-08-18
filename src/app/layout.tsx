@@ -1,6 +1,7 @@
 // app/layout.tsx
 import './globals.css';
 import type { Metadata } from 'next';
+import RouteCleanup from './RouteCleanup';
 
 export const metadata: Metadata = {
   title: 'cardi.pics',
@@ -30,6 +31,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         />
       </head>
       <body className="min-h-screen bg-white text-neutral-900 antialiased">
+        <RouteCleanup />
         {children}
       </body>
     </html>

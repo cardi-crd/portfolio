@@ -1,11 +1,31 @@
-'use client'
+'use client';
 
-import { useState } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
-import ImageStack from '@/components/ImageStack'
+import { useEffect, useState } from 'react';
+import { usePathname } from 'next/navigation';
+import { motion, AnimatePresence } from 'framer-motion';
+import ImageStack from '@/components/ImageStack';
 
 export default function Home() {
-  const [isPhoneMenuOpen, setIsPhoneMenuOpen] = useState(false)
+  const [isPhoneMenuOpen, setIsPhoneMenuOpen] = useState(false);
+  const pathname = usePathname();
+
+  // Close menu and clear locks whenever route changes (including back to "/")
+  useEffect(() => {
+    setIsPhoneMenuOpen(false);
+    document.body.classList.remove('no-scroll');
+    document.body.style.overflow = '';
+  }, [pathname]);
+
+  // Lock/unlock body when menu toggles
+  useEffect(() => {
+    if (isPhoneMenuOpen) {
+      document.body.classList.add('no-scroll');
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.classList.remove('no-scroll');
+      document.body.style.overflow = '';
+    }
+  }, [isPhoneMenuOpen]);
   
   const phoneNumber = '+1 (520) 609-6912'
   
