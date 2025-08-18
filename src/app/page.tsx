@@ -86,15 +86,25 @@ export default function Home() {
         </nav>
 
         {/* Phone Menu Dropdown */}
-        <AnimatePresence>
+        <AnimatePresence mode="wait" onExitComplete={() => {
+          document.body.style.overflow = '';
+        }}>
           {isPhoneMenuOpen && (
             <>
               {/* Backdrop */}
               <motion.div
-                className="fixed inset-0 bg-black/20 backdrop-blur-sm"
+                key="phone-backdrop"
+                id="phone-backdrop"
+                className="fixed inset-0 z-[1200]"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
+                exit={{ opacity: 0, transition: { duration: 0.18 } }}
+                onAnimationStart={(def) => {
+                  if (def === 'exit' && matchMedia('(pointer: coarse)').matches) {
+                    const n = document.getElementById('phone-backdrop');
+                    if (n) n.style.pointerEvents = 'none';
+                  }
+                }}
                 onClick={() => setIsPhoneMenuOpen(false)}
               />
               

@@ -242,26 +242,19 @@ export default function ImageStack() {
 
   // Cleanup effect for viewingPhoto and zoomedCategoryKey states
   useEffect(() => {
-    return () => {
-      try {
-        // If you create a viewer/swiper/lightbox instance, assign it to 'inst'
-        let inst: any = undefined;
-        // inst = createPhotoSwipeOrYARLOrSwiper(...);
+    let inst: any = undefined;
+    // TODO: initialize your viewer/slider here and assign to 'inst'
+    // e.g., inst = new Swiper(...); or photoswipe/yarl instance
 
-        // Cleanup any instances
-        try { inst?.destroy?.(); } catch {}
-        
-        // Remove common lightbox overlays
-        document
-          .querySelectorAll('.pswp, .yarl__portal, .lightbox-portal, .lightbox-backdrop')
-          .forEach((n) => n.remove());
-        
-        // Reset body styles
-        document.body.style.overflow = '';
-        document.body.classList.remove('no-scroll', 'modal-open');
-      } catch (error) {
-        console.warn('Cleanup error:', error);
-      }
+    return () => {
+      try { inst?.destroy?.(true, true); } catch {}
+      document.body.classList.remove('no-scroll', 'modal-open');
+      document.body.style.overflow = '';
+      document.body.style.touchAction = '';
+      (document.documentElement as HTMLElement).style.touchAction = '';
+      document
+        .querySelectorAll('.pswp, .yarl__portal, .lightbox-portal, .modal-backdrop')
+        .forEach((n) => ((n as HTMLElement).style.pointerEvents = 'none'));
     };
   }, [viewingPhoto, zoomedCategoryKey]);
 

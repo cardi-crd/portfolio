@@ -2,6 +2,7 @@
 import './globals.css';
 import type { Metadata } from 'next';
 import RouteCleanup from './RouteCleanup';
+import MobileTapWatchdog from './MobileTapWatchdog';
 
 export const metadata: Metadata = {
   title: 'cardi.pics',
@@ -32,6 +33,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       </head>
       <body className="min-h-screen bg-white text-neutral-900 antialiased">
         <RouteCleanup />
+        <MobileTapWatchdog />
         {children}
       </body>
     </html>
