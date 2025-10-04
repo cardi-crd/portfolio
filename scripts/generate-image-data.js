@@ -54,6 +54,12 @@ function generateImageData() {
     'Prescott 4th of July Rodeo'
   );
   
+  const blackRodeoScottsdaleData = generateSubCategoryData(
+    path.join(basePath, 'rodeo/black-rodeo-scottsdale'),
+    'black-rodeo-scottsdale',
+    'Black Rodeo Scottsdale'
+  );
+  
   // Generate other categories
   const portraitureFiles = getImageFiles(path.join(basePath, 'portraiture'));
   const brandworkFiles = getImageFiles(path.join(basePath, 'brandwork'));
@@ -63,7 +69,7 @@ function generateImageData() {
       key: 'rodeo',
       title: 'Rodeo',
       hasSubCategories: true,
-      subCategories: [tucsonData, prescottData]
+      subCategories: [tucsonData, prescottData, blackRodeoScottsdaleData]
     },
     {
       key: 'portraiture',

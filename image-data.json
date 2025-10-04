@@ -177,6 +177,78 @@
             "category": "Prescott 4th of July Rodeo"
           }
         ]
+      },
+      {
+        "key": "black-rodeo-scottsdale",
+        "title": "Black Rodeo Scottsdale",
+        "images": [
+          {
+            "id": 1,
+            "src": "/images/rodeo/black-rodeo-scottsdale/DSC04890.jpg",
+            "title": "DSC04890",
+            "category": "Black Rodeo Scottsdale"
+          },
+          {
+            "id": 2,
+            "src": "/images/rodeo/black-rodeo-scottsdale/DSC05393.jpg",
+            "title": "DSC05393",
+            "category": "Black Rodeo Scottsdale"
+          },
+          {
+            "id": 3,
+            "src": "/images/rodeo/black-rodeo-scottsdale/DSC05548-2.jpg",
+            "title": "DSC05548 2",
+            "category": "Black Rodeo Scottsdale"
+          },
+          {
+            "id": 4,
+            "src": "/images/rodeo/black-rodeo-scottsdale/DSC05624-2.jpg",
+            "title": "DSC05624 2",
+            "category": "Black Rodeo Scottsdale"
+          },
+          {
+            "id": 5,
+            "src": "/images/rodeo/black-rodeo-scottsdale/DSC05681-2.jpg",
+            "title": "DSC05681 2",
+            "category": "Black Rodeo Scottsdale"
+          },
+          {
+            "id": 6,
+            "src": "/images/rodeo/black-rodeo-scottsdale/DSC05715.jpg",
+            "title": "DSC05715",
+            "category": "Black Rodeo Scottsdale"
+          },
+          {
+            "id": 7,
+            "src": "/images/rodeo/black-rodeo-scottsdale/DSC06098.jpg",
+            "title": "DSC06098",
+            "category": "Black Rodeo Scottsdale"
+          },
+          {
+            "id": 8,
+            "src": "/images/rodeo/black-rodeo-scottsdale/DSC07557.jpg",
+            "title": "DSC07557",
+            "category": "Black Rodeo Scottsdale"
+          },
+          {
+            "id": 9,
+            "src": "/images/rodeo/black-rodeo-scottsdale/DSC07700.jpg",
+            "title": "DSC07700",
+            "category": "Black Rodeo Scottsdale"
+          },
+          {
+            "id": 10,
+            "src": "/images/rodeo/black-rodeo-scottsdale/DSC08176.jpg",
+            "title": "DSC08176",
+            "category": "Black Rodeo Scottsdale"
+          },
+          {
+            "id": 11,
+            "src": "/images/rodeo/black-rodeo-scottsdale/DSC08339.jpg",
+            "title": "DSC08339",
+            "category": "Black Rodeo Scottsdale"
+          }
+        ]
       }
     ]
   },
@@ -205,26 +277,62 @@
       },
       {
         "id": 4,
-        "src": "/images/portraiture/ant.png",
-        "title": "Ant",
-        "category": "Portraiture"
-      },
-      {
-        "id": 5,
         "src": "/images/portraiture/car.jpg",
         "title": "Car",
         "category": "Portraiture"
       },
       {
-        "id": 6,
+        "id": 5,
         "src": "/images/portraiture/cat.png",
         "title": "Cat",
         "category": "Portraiture"
       },
       {
+        "id": 6,
+        "src": "/images/portraiture/cat1.avif",
+        "title": "Cat1",
+        "category": "Portraiture"
+      },
+      {
         "id": 7,
+        "src": "/images/portraiture/cat2.avif",
+        "title": "Cat2",
+        "category": "Portraiture"
+      },
+      {
+        "id": 8,
+        "src": "/images/portraiture/cat3.avif",
+        "title": "Cat3",
+        "category": "Portraiture"
+      },
+      {
+        "id": 9,
+        "src": "/images/portraiture/cn.avif",
+        "title": "Cn",
+        "category": "Portraiture"
+      },
+      {
+        "id": 10,
         "src": "/images/portraiture/cndesert.jpg",
         "title": "Cndesert",
+        "category": "Portraiture"
+      },
+      {
+        "id": 11,
+        "src": "/images/portraiture/port1.jpg",
+        "title": "Port1",
+        "category": "Portraiture"
+      },
+      {
+        "id": 12,
+        "src": "/images/portraiture/port2.jpg",
+        "title": "Port2",
+        "category": "Portraiture"
+      },
+      {
+        "id": 13,
+        "src": "/images/portraiture/rach1.avif",
+        "title": "Rach1",
         "category": "Portraiture"
       }
     ]
@@ -236,30 +344,84 @@
     "images": [
       {
         "id": 1,
+        "src": "/images/brandwork/-fatoil.png",
+        "title": " Fatoil",
+        "category": "Brand Work"
+      },
+      {
+        "id": 2,
+        "src": "/images/brandwork/-nickinana.png",
+        "title": " Nickinana",
+        "category": "Brand Work"
+      },
+      {
+        "id": 3,
+        "src": "/images/brandwork/-rachel.png",
+        "title": " Rachel",
+        "category": "Brand Work"
+      },
+      {
+        "id": 4,
+        "src": "/images/brandwork/-rachel2.png",
+        "title": " Rachel2",
+        "category": "Brand Work"
+      },
+      {
+        "id": 5,
         "src": "/images/brandwork/arlierecess.jpg",
         "title": "Arlierecess",
         "category": "Brand Work"
       },
       {
-        "id": 2,
+        "id": 6,
         "src": "/images/brandwork/arlierecess2.jpg",
         "title": "Arlierecess2",
         "category": "Brand Work"
       },
       {
-        "id": 3,
+        "id": 7,
         "src": "/images/brandwork/bbc.JPG",
         "title": "Bbc",
         "category": "Brand Work"
       },
       {
-        "id": 4,
+        "id": 8,
         "src": "/images/brandwork/bbc2.JPG",
         "title": "Bbc2",
         "category": "Brand Work"
       },
       {
-        "id": 5,
+        "id": 9,
+        "src": "/images/brandwork/clarins1.png",
+        "title": "Clarins1",
+        "category": "Brand Work"
+      },
+      {
+        "id": 10,
+        "src": "/images/brandwork/clarins2.png",
+        "title": "Clarins2",
+        "category": "Brand Work"
+      },
+      {
+        "id": 11,
+        "src": "/images/brandwork/clarins4.png",
+        "title": "Clarins4",
+        "category": "Brand Work"
+      },
+      {
+        "id": 12,
+        "src": "/images/brandwork/clarinsnara.png",
+        "title": "Clarinsnara",
+        "category": "Brand Work"
+      },
+      {
+        "id": 13,
+        "src": "/images/brandwork/cristianxmakeup.png",
+        "title": "Cristianxmakeup",
+        "category": "Brand Work"
+      },
+      {
+        "id": 14,
         "src": "/images/brandwork/savage.png",
         "title": "Savage",
         "category": "Brand Work"

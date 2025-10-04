@@ -35,35 +35,64 @@ const categories: Category[] = [
   {
     key: 'rodeo',
     title: 'Rodeo',
-    hasSubCategories: false,
-    images: [
-      { id: 1,  src: '/images/rodeo/tucson/tucson.png',  title: 'Tucson',   category: 'Rodeo' },
-      { id: 2,  src: '/images/rodeo/tucson/tucson1.png', title: 'Tucson1',  category: 'Rodeo' },
-      { id: 3,  src: '/images/rodeo/tucson/tucson10.png', title: 'Tucson10', category: 'Rodeo' },
-      { id: 4,  src: '/images/rodeo/tucson/tucson11.png', title: 'Tucson11', category: 'Rodeo' },
-      { id: 5,  src: '/images/rodeo/tucson/tucson12.png', title: 'Tucson12', category: 'Rodeo' },
-      { id: 6,  src: '/images/rodeo/tucson/tucson13.png', title: 'Tucson13', category: 'Rodeo' },
-      { id: 7,  src: '/images/rodeo/tucson/tucson14.png', title: 'Tucson14', category: 'Rodeo' },
-      { id: 8,  src: '/images/rodeo/tucson/tucson15.png', title: 'Tucson15', category: 'Rodeo' },
-      { id: 9,  src: '/images/rodeo/tucson/tucson2.png',  title: 'Tucson2',  category: 'Rodeo' },
-      { id: 10, src: '/images/rodeo/tucson/tucson3.png',  title: 'Tucson3',  category: 'Rodeo' },
-      { id: 11, src: '/images/rodeo/tucson/tucson4.png',  title: 'Tucson4',  category: 'Rodeo' },
-      { id: 12, src: '/images/rodeo/tucson/tucson5.png',  title: 'Tucson5',  category: 'Rodeo' },
-      { id: 13, src: '/images/rodeo/tucson/tucson6.png',  title: 'Tucson6',  category: 'Rodeo' },
-      { id: 14, src: '/images/rodeo/tucson/tucson7.png',  title: 'Tucson7',  category: 'Rodeo' },
-      { id: 15, src: '/images/rodeo/tucson/tucson8.png',  title: 'Tucson8',  category: 'Rodeo' },
-      { id: 16, src: '/images/rodeo/tucson/tucson9.png',  title: 'Tucson9',  category: 'Rodeo' },
-      { id: 17, src: '/images/rodeo/prescott/prescott.jpg',  title: 'Prescott',  category: 'Rodeo' },
-      { id: 18, src: '/images/rodeo/prescott/prescott1.jpg', title: 'Prescott1', category: 'Rodeo' },
-      { id: 19, src: '/images/rodeo/prescott/prescott10.jpg',title: 'Prescott10',category: 'Rodeo' },
-      { id: 20, src: '/images/rodeo/prescott/prescott2.jpg', title: 'Prescott2', category: 'Rodeo' },
-      { id: 21, src: '/images/rodeo/prescott/prescott3.jpg', title: 'Prescott3', category: 'Rodeo' },
-      { id: 22, src: '/images/rodeo/prescott/prescott4.jpg', title: 'Prescott4', category: 'Rodeo' },
-      { id: 23, src: '/images/rodeo/prescott/prescott5.jpg', title: 'Prescott5', category: 'Rodeo' },
-      { id: 24, src: '/images/rodeo/prescott/prescott6.jpg', title: 'Prescott6', category: 'Rodeo' },
-      { id: 25, src: '/images/rodeo/prescott/prescott7.jpg', title: 'Prescott7', category: 'Rodeo' },
-      { id: 26, src: '/images/rodeo/prescott/prescott8.jpg', title: 'Prescott8', category: 'Rodeo' },
-      { id: 27, src: '/images/rodeo/prescott/prescott9.jpg', title: 'Prescott9', category: 'Rodeo' }
+    hasSubCategories: true,
+    subCategories: [
+      {
+        key: 'tucson',
+        title: 'Tucson: La Fiesta De Los Vaqueros',
+        images: [
+          { id: 1,  src: '/images/rodeo/tucson/tucson.png',  title: 'Tucson',   category: 'Tucson: La Fiesta De Los Vaqueros' },
+          { id: 2,  src: '/images/rodeo/tucson/tucson1.png', title: 'Tucson1',  category: 'Tucson: La Fiesta De Los Vaqueros' },
+          { id: 3,  src: '/images/rodeo/tucson/tucson10.png', title: 'Tucson10', category: 'Tucson: La Fiesta De Los Vaqueros' },
+          { id: 4,  src: '/images/rodeo/tucson/tucson11.png', title: 'Tucson11', category: 'Tucson: La Fiesta De Los Vaqueros' },
+          { id: 5,  src: '/images/rodeo/tucson/tucson12.png', title: 'Tucson12', category: 'Tucson: La Fiesta De Los Vaqueros' },
+          { id: 6,  src: '/images/rodeo/tucson/tucson13.png', title: 'Tucson13', category: 'Tucson: La Fiesta De Los Vaqueros' },
+          { id: 7,  src: '/images/rodeo/tucson/tucson14.png', title: 'Tucson14', category: 'Tucson: La Fiesta De Los Vaqueros' },
+          { id: 8,  src: '/images/rodeo/tucson/tucson15.png', title: 'Tucson15', category: 'Tucson: La Fiesta De Los Vaqueros' },
+          { id: 9,  src: '/images/rodeo/tucson/tucson2.png',  title: 'Tucson2',  category: 'Tucson: La Fiesta De Los Vaqueros' },
+          { id: 10, src: '/images/rodeo/tucson/tucson3.png',  title: 'Tucson3',  category: 'Tucson: La Fiesta De Los Vaqueros' },
+          { id: 11, src: '/images/rodeo/tucson/tucson4.png',  title: 'Tucson4',  category: 'Tucson: La Fiesta De Los Vaqueros' },
+          { id: 12, src: '/images/rodeo/tucson/tucson5.png',  title: 'Tucson5',  category: 'Tucson: La Fiesta De Los Vaqueros' },
+          { id: 13, src: '/images/rodeo/tucson/tucson6.png',  title: 'Tucson6',  category: 'Tucson: La Fiesta De Los Vaqueros' },
+          { id: 14, src: '/images/rodeo/tucson/tucson7.png',  title: 'Tucson7',  category: 'Tucson: La Fiesta De Los Vaqueros' },
+          { id: 15, src: '/images/rodeo/tucson/tucson8.png',  title: 'Tucson8',  category: 'Tucson: La Fiesta De Los Vaqueros' },
+          { id: 16, src: '/images/rodeo/tucson/tucson9.png',  title: 'Tucson9',  category: 'Tucson: La Fiesta De Los Vaqueros' }
+        ]
+      },
+      {
+        key: 'prescott',
+        title: 'Prescott 4th of July Rodeo',
+        images: [
+          { id: 1, src: '/images/rodeo/prescott/prescott.jpg',  title: 'Prescott',  category: 'Prescott 4th of July Rodeo' },
+          { id: 2, src: '/images/rodeo/prescott/prescott1.jpg', title: 'Prescott1', category: 'Prescott 4th of July Rodeo' },
+          { id: 3, src: '/images/rodeo/prescott/prescott10.jpg',title: 'Prescott10',category: 'Prescott 4th of July Rodeo' },
+          { id: 4, src: '/images/rodeo/prescott/prescott2.jpg', title: 'Prescott2', category: 'Prescott 4th of July Rodeo' },
+          { id: 5, src: '/images/rodeo/prescott/prescott3.jpg', title: 'Prescott3', category: 'Prescott 4th of July Rodeo' },
+          { id: 6, src: '/images/rodeo/prescott/prescott4.jpg', title: 'Prescott4', category: 'Prescott 4th of July Rodeo' },
+          { id: 7, src: '/images/rodeo/prescott/prescott5.jpg', title: 'Prescott5', category: 'Prescott 4th of July Rodeo' },
+          { id: 8, src: '/images/rodeo/prescott/prescott6.jpg', title: 'Prescott6', category: 'Prescott 4th of July Rodeo' },
+          { id: 9, src: '/images/rodeo/prescott/prescott7.jpg', title: 'Prescott7', category: 'Prescott 4th of July Rodeo' },
+          { id: 10, src: '/images/rodeo/prescott/prescott8.jpg', title: 'Prescott8', category: 'Prescott 4th of July Rodeo' },
+          { id: 11, src: '/images/rodeo/prescott/prescott9.jpg', title: 'Prescott9', category: 'Prescott 4th of July Rodeo' }
+        ]
+      },
+      {
+        key: 'black-rodeo-scottsdale',
+        title: 'Black Rodeo Scottsdale',
+        images: [
+          { id: 1, src: '/images/rodeo/black-rodeo-scottsdale/DSC04890.jpg', title: 'DSC04890', category: 'Black Rodeo Scottsdale' },
+          { id: 2, src: '/images/rodeo/black-rodeo-scottsdale/DSC05393.jpg', title: 'DSC05393', category: 'Black Rodeo Scottsdale' },
+          { id: 3, src: '/images/rodeo/black-rodeo-scottsdale/DSC05548-2.jpg', title: 'DSC05548 2', category: 'Black Rodeo Scottsdale' },
+          { id: 4, src: '/images/rodeo/black-rodeo-scottsdale/DSC05624-2.jpg', title: 'DSC05624 2', category: 'Black Rodeo Scottsdale' },
+          { id: 5, src: '/images/rodeo/black-rodeo-scottsdale/DSC05681-2.jpg', title: 'DSC05681 2', category: 'Black Rodeo Scottsdale' },
+          { id: 6, src: '/images/rodeo/black-rodeo-scottsdale/DSC05715.jpg', title: 'DSC05715', category: 'Black Rodeo Scottsdale' },
+          { id: 7, src: '/images/rodeo/black-rodeo-scottsdale/DSC06098.jpg', title: 'DSC06098', category: 'Black Rodeo Scottsdale' },
+          { id: 8, src: '/images/rodeo/black-rodeo-scottsdale/DSC07557.jpg', title: 'DSC07557', category: 'Black Rodeo Scottsdale' },
+          { id: 9, src: '/images/rodeo/black-rodeo-scottsdale/DSC07700.jpg', title: 'DSC07700', category: 'Black Rodeo Scottsdale' },
+          { id: 10, src: '/images/rodeo/black-rodeo-scottsdale/DSC08176.jpg', title: 'DSC08176', category: 'Black Rodeo Scottsdale' },
+          { id: 11, src: '/images/rodeo/black-rodeo-scottsdale/DSC08339.jpg', title: 'DSC08339', category: 'Black Rodeo Scottsdale' }
+        ]
+      }
     ]
   },
   { 
