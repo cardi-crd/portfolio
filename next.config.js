@@ -1,9 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   experimental: { optimizeCss: false },
-  images: {
-    unoptimized: true,
-  },
   async headers() {
     return [
       {

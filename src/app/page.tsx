@@ -5,6 +5,7 @@ import { usePathname } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import ImageStack from '@/components/ImageStack';
 import { useScrollLock } from '@/lib/useScrollLock';
+import { hapticTap } from '@/lib/haptics';
 
 export default function Home() {
   const [isPhoneMenuOpen, setIsPhoneMenuOpen] = useState(false);
@@ -20,27 +21,18 @@ export default function Home() {
   // Use robust scroll lock for phone menu
   useScrollLock(isPhoneMenuOpen);
   
-  const phoneNumber = '+1 (520) 609-6912'
+  const phoneNumberDisplay = '(520) 609-6912'
+  const phoneNumberDial = '+15206096912'
   
   const handleCall = () => {
-    window.location.href = `tel:${phoneNumber}`
+    hapticTap();
+    window.location.href = `tel:${phoneNumberDial}`
     setIsPhoneMenuOpen(false)
   }
   
-  const handleText = async () => {
-    try {
-      await navigator.clipboard.writeText(phoneNumber)
-      alert('Number has been copied to your clipboard')
-    } catch (err) {
-      // Fallback for older browsers
-      const textArea = document.createElement('textarea')
-      textArea.value = phoneNumber
-      document.body.appendChild(textArea)
-      textArea.select()
-      document.execCommand('copy')
-      document.body.removeChild(textArea)
-      alert('Number has been copied to your clipboard')
-    }
+  const handleText = () => {
+    hapticTap();
+    window.location.href = `sms:${phoneNumberDial}`
     setIsPhoneMenuOpen(false)
   }
 
@@ -50,12 +42,16 @@ export default function Home() {
       <header className="p-6 relative z-50">
         <nav className="flex justify-between items-center max-w-7xl mx-auto">
           <div className="text-xl font-medium text-white">
-            Portfolio
+            <ImageStackHeaderLabel />
           </div>
           
           {/* Phone Menu Button */}
           <button
-            onClick={() => setIsPhoneMenuOpen(!isPhoneMenuOpen)}
+            id="phone-menu-button"
+            onClick={() => {
+              hapticTap();
+              setIsPhoneMenuOpen(!isPhoneMenuOpen);
+            }}
             className="flex items-center justify-center w-10 h-10 rounded-lg bg-white/10 hover:bg-white/20 transition-colors"
             aria-label="Contact options"
           >
@@ -99,6 +95,7 @@ export default function Home() {
                   }
                 }}
                 onClick={() => setIsPhoneMenuOpen(false)}
+                onClickCapture={hapticTap}
               />
               
               {/* Phone Options Panel */}
@@ -117,7 +114,7 @@ export default function Home() {
                     <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
                     </svg>
-                    <span>Call</span>
+                    <span>Call {phoneNumberDisplay}</span>
                   </button>
                   <button
                     onClick={handleText}
@@ -126,7 +123,7 @@ export default function Home() {
                     <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
                     </svg>
-                    <span>Text</span>
+                    <span>Text {phoneNumberDisplay}</span>
                   </button>
                 </div>
               </motion.div>
@@ -141,4 +138,32 @@ export default function Home() {
       </div>
     </main>
   )
+}
+
+function ImageStackHeaderLabel() {
+  useEffect(() => {
+    const sync = () => {
+      const root = document.getElementById('portfolio-header-label');
+      const phoneButton = document.getElementById('phone-menu-button');
+      const stack = document.getElementById('image-stack-root');
+      if (!root || !stack) return;
+      const inAlbum = stack.getAttribute('data-in-album') === 'true';
+      root.style.visibility = inAlbum ? 'hidden' : 'visible';
+      if (phoneButton) {
+        phoneButton.style.visibility = inAlbum ? 'hidden' : 'visible';
+        phoneButton.style.pointerEvents = inAlbum ? 'none' : 'auto';
+      }
+    };
+
+    sync();
+    const observer = new MutationObserver(sync);
+    const stack = document.getElementById('image-stack-root');
+    if (stack) {
+      observer.observe(stack, { attributes: true, attributeFilter: ['data-in-album'] });
+    }
+
+    return () => observer.disconnect();
+  }, []);
+
+  return <span id="portfolio-header-label">Portfolio</span>;
 }

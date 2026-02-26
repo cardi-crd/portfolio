@@ -1,4 +1,5 @@
 import { motion } from 'framer-motion';
+import { hapticTap } from '@/lib/haptics';
 
 // Helper function to get all images from a category
 function getAllImagesFromCategory(category: any): any[] {
@@ -11,16 +12,19 @@ function getAllImagesFromCategory(category: any): any[] {
 // Stacked preview component
 function StackedPreview({ images, mode = 'stacked' }: { images: any[]; mode?: 'stacked' | 'flat' }) {
   const preview = images.slice(0, 6);
+  const revealDelayForIndex = (index: number) => (preview.length - 1 - index) * 0.06;
   
   if (mode === 'flat') {
     return (
       <div className="relative w-full h-full">
         {preview.map((img, index) => (
-          <div
+          <motion.div
             key={img.id}
             className="absolute inset-0"
+            initial={{ opacity: 0, scale: 0.98 }}
+            animate={{ opacity: index === 0 ? 1 : 0.1, scale: 1 }}
+            transition={{ duration: 0.28, ease: 'easeOut', delay: revealDelayForIndex(index) }}
             style={{
-              opacity: index === 0 ? 1 : 0.1,
               zIndex: preview.length - index
             }}
           >
@@ -29,7 +33,7 @@ function StackedPreview({ images, mode = 'stacked' }: { images: any[]; mode?: 's
               alt={img.title}
               className="w-full h-full object-cover"
             />
-          </div>
+          </motion.div>
         ))}
       </div>
     );
@@ -44,12 +48,14 @@ function StackedPreview({ images, mode = 'stacked' }: { images: any[]; mode?: 's
   return (
     <div className="relative w-full h-full">
       {preview.map((img, index) => (
-        <div
+        <motion.div
           key={img.id}
           className="absolute inset-0 rounded-2xl overflow-hidden border border-white/10"
+          initial={{ opacity: 0, scale: 0.94, y: 8 }}
+          animate={{ opacity: opacities[index], scale: 1, y: 0 }}
+          transition={{ duration: 0.36, ease: 'easeOut', delay: revealDelayForIndex(index) }}
           style={{
             transform: `rotate(${rotations[index]}deg) translate(${xOffsets[index]}px, ${yOffsets[index]}px) scale(${scales[index]})`,
-            opacity: opacities[index],
             zIndex: preview.length - index,
             boxShadow: '0 4px 20px rgba(0,0,0,0.3)',
             pointerEvents: index === 0 ? 'auto' : 'none'
@@ -61,7 +67,7 @@ function StackedPreview({ images, mode = 'stacked' }: { images: any[]; mode?: 's
             className="w-full h-full object-cover"
           />
           <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-black/20" />
-        </div>
+        </motion.div>
       ))}
     </div>
   );
@@ -88,16 +94,11 @@ export function AlbumGrid({ categories, onAlbumClick, renderKey }: AlbumGridProp
             <motion.button
               key={`${cat.key}-${renderKey}`}
               layoutId={layoutId}
+              type="button"
               onClick={(e) => {
                 e.preventDefault();
                 e.stopPropagation();
-                console.log('Album card clicked:', cat.key);
-                onAlbumClick(cat.key);
-              }}
-              onTouchStart={(e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                console.log('Album card touched:', cat.key);
+                hapticTap();
                 onAlbumClick(cat.key);
               }}
               className="w-full aspect-[3/4] rounded-2xl md:rounded-3xl overflow-hidden bg-white/5 block touch-manipulation cursor-pointer"

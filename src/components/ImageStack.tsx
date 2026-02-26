@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState, type TouchEvent as ReactTouchEvent } from 'react';
 import { motion, AnimatePresence, PanInfo } from 'framer-motion';
 import Image from 'next/image';
 import { normalizeImageSrc } from '@/lib/normalizeImageSrc';
@@ -8,6 +8,7 @@ import { AlbumGrid } from './AlbumGrid';
 import { OptimizedImage } from './OptimizedImage';
 import { imagePreloader } from '@/lib/imagePreloader';
 import { useScrollLock } from '@/lib/useScrollLock';
+import { hapticSwipe, hapticTap } from '@/lib/haptics';
 
 type ImageData = {
   id: number;
@@ -118,23 +119,53 @@ const categories: Category[] = [
   { 
     key: 'brandwork', 
     title: 'Brand Work', 
-    hasSubCategories: false, 
-    images: [
-      { id: 1, src: '/images/brandwork/arlierecess.jpg', title: 'Recess Mood Drinks', category: 'Brand Work' },
-      { id: 2, src: '/images/brandwork/arlierecess2.jpg', title: 'Recess Mood Drinks', category: 'Brand Work' },
-      { id: 3, src: '/images/brandwork/bbc.JPG', title: 'Blue Bottle Coffee x Samara Origins', category: 'Brand Work' },
-      { id: 4, src: '/images/brandwork/bbc2.JPG', title: 'Blue Bottle Coffee x Samara Origins', category: 'Brand Work' },
-      { id: 5, src: '/images/brandwork/savage.png', title: 'Savage x Fenty', category: 'Brand Work' },
-      { id: 6, src: '/images/brandwork/cristianxmakeup.png', title: 'Coachella w/ NYX cosmetics - @Nyane x @CristianDennis', category: 'Brand Work' },
-      { id: 7, src: '/images/brandwork/-fatoil.png', title: 'Coachella x NYX Cosmetics - @ArlieKontic', category: 'Brand Work' },
-      { id: 8, src: '/images/brandwork/-nickinana.png', title: 'Coachella x NYX Cosmetics - @Nikki.Bruner x @NanaBruner', category: 'Brand Work' },
-      { id: 9, src: '/images/brandwork/-rachel.png', title: 'Coachella x NYX Cosmetics - @Rachel.OCool', category: 'Brand Work' },
-      { id: 10, src: '/images/brandwork/-rachel2.png', title: 'Coachella x NYX Cosmetics - @Rachel.OCool', category: 'Brand Work' },
-      { id: 11, src: '/images/brandwork/clarins1.png', title: 'Clarins Beauty Icons Event 2025', category: 'Brand Work' },
-      { id: 12, src: '/images/brandwork/clarins2.png', title: 'Clarins Beauty Icons Event 2025', category: 'Brand Work' },
-      { id: 13, src: '/images/brandwork/clarins4.png', title: 'Clarins Beauty Icons Event 2025', category: 'Brand Work' },
-      { id: 14, src: '/images/brandwork/clarinsnara.png', title: 'Clarins Beauty Icons Event 2025 - @ArlieKontic x @NaraAziza (Nara Smith)', category: 'Brand Work' }
-    ] 
+    hasSubCategories: true,
+    subCategories: [
+      {
+        key: 'recess-mood-drinks',
+        title: 'Recess Mood Drinks',
+        images: [
+          { id: 1, src: '/images/brandwork/arlierecess.jpg', title: 'Recess Mood Drinks', category: 'Brand Work' },
+          { id: 2, src: '/images/brandwork/arlierecess2.jpg', title: 'Recess Mood Drinks', category: 'Brand Work' }
+        ]
+      },
+      {
+        key: 'nyx-cosmetics-x-coachella',
+        title: 'NYX Cosmetics X Coachella',
+        images: [
+          { id: 1, src: '/images/brandwork/-fatoil.png', title: 'Coachella x NYX Cosmetics - @ArlieKontic', category: 'Brand Work' },
+          { id: 2, src: '/images/brandwork/-nickinana.png', title: 'Coachella x NYX Cosmetics - @Nikki.Bruner x @NanaBruner', category: 'Brand Work' },
+          { id: 3, src: '/images/brandwork/-rachel.png', title: 'Coachella x NYX Cosmetics - @Rachel.OCool', category: 'Brand Work' },
+          { id: 4, src: '/images/brandwork/-rachel2.png', title: 'Coachella x NYX Cosmetics - @Rachel.OCool', category: 'Brand Work' },
+          { id: 5, src: '/images/brandwork/cristianxmakeup.png', title: 'Coachella w/ NYX cosmetics - @Nyane x @CristianDennis', category: 'Brand Work' }
+        ]
+      },
+      {
+        key: 'blue-bottle-coffee-x-samara-orgins',
+        title: 'Blue Bottle Coffee x Samara Orgins',
+        images: [
+          { id: 1, src: '/images/brandwork/bbc.JPG', title: 'Blue Bottle Coffee x Samara Orgins', category: 'Brand Work' },
+          { id: 2, src: '/images/brandwork/bbc2.JPG', title: 'Blue Bottle Coffee x Samara Orgins', category: 'Brand Work' }
+        ]
+      },
+      {
+        key: 'clarins-beauty-icons-event-2025',
+        title: 'Clarins Beauty Icons Event 2025',
+        images: [
+          { id: 1, src: '/images/brandwork/clarins1.png', title: 'Clarins Beauty Icons Event 2025', category: 'Brand Work' },
+          { id: 2, src: '/images/brandwork/clarins2.png', title: 'Clarins Beauty Icons Event 2025', category: 'Brand Work' },
+          { id: 3, src: '/images/brandwork/clarins4.png', title: 'Clarins Beauty Icons Event 2025', category: 'Brand Work' },
+          { id: 4, src: '/images/brandwork/clarinsnara.png', title: 'Clarins Beauty Icons Event 2025', category: 'Brand Work' }
+        ]
+      },
+      {
+        key: 'savage-x-fenty',
+        title: 'Savage X Fenty',
+        images: [
+          { id: 1, src: '/images/brandwork/savage.png', title: 'Savage X Fenty', category: 'Brand Work' }
+        ]
+      }
+    ]
   }
 ];
 
@@ -146,8 +177,30 @@ function getAllImagesFromCategory(category: Category): ImageData[] {
   return category.images || [];
 }
 
+function preloadImageBatch(images: ImageData[], limit = 4) {
+  images.slice(0, limit).forEach((img) => {
+    imagePreloader.preloadImage(img.src);
+  });
+}
+
+function preloadNextImages(images: ImageData[], startIndex: number, count = 2) {
+  images.slice(startIndex + 1, startIndex + 1 + count).forEach((img) => {
+    imagePreloader.preloadImage(img.src);
+  });
+}
+
 // Optimized image component with preloading and lazy loading
-const Img = ({ src, alt, priority = false }: { src: string; alt: string; priority?: boolean }) => {
+const Img = ({
+  src,
+  alt,
+  priority = false,
+  showPlaceholder = true,
+}: {
+  src: string;
+  alt: string;
+  priority?: boolean;
+  showPlaceholder?: boolean;
+}) => {
   return (
     <div className="w-full h-full relative">
       <OptimizedImage
@@ -155,6 +208,7 @@ const Img = ({ src, alt, priority = false }: { src: string; alt: string; priorit
         alt={alt ?? ''}
         className="object-cover w-full h-full"
         priority={priority}
+        showPlaceholder={showPlaceholder}
         onError={(e) => {
           console.error('Image failed to load:', src);
           console.error('Error:', e);
@@ -167,36 +221,46 @@ const Img = ({ src, alt, priority = false }: { src: string; alt: string; priorit
 // Stacked preview component with mode support
 function StackedPreview({ images, mode = 'stacked' }: { images: ImageData[]; mode?: 'stacked' | 'flat' }) {
   const preview = images.slice(0, 6);
+  const revealDelayForIndex = (index: number) => (preview.length - 1 - index) * 0.06;
   
   // Preload the first few images for faster album preview
   useEffect(() => {
-    preview.slice(0, 3).forEach(img => {
+    const links: HTMLLinkElement[] = [];
+    const preloadOrder = [preview[0], ...preview.slice(1, 3)].filter(Boolean);
+    preloadOrder.forEach((img) => {
       const s = normalizeImageSrc(img.src);
-      if (s) {
-        const link = document.createElement('link');
-        link.rel = 'preload';
-        link.as = 'image';
-        link.href = s;
-        document.head.appendChild(link);
-      }
+      if (!s) return;
+
+      const link = document.createElement('link');
+      link.rel = 'preload';
+      link.as = 'image';
+      link.href = s;
+      document.head.appendChild(link);
+      links.push(link);
     });
-  }, [preview]);
+
+    return () => {
+      links.forEach((link) => link.remove());
+    };
+  }, [images]);
   
   if (mode === 'flat') {
     // Flat mode: only top image visible, no rotation/offset
     return (
       <div className="relative w-full h-full">
         {preview.map((img, index) => (
-          <div
+          <motion.div
             key={img.id}
             className="absolute inset-0"
+            initial={{ opacity: 0, scale: 0.98 }}
+            animate={{ opacity: index === 0 ? 1 : 0.1, scale: 1 }}
+            transition={{ duration: 0.28, ease: 'easeOut', delay: revealDelayForIndex(index) }}
             style={{
-              opacity: index === 0 ? 1 : 0.1,
               zIndex: preview.length - index
             }}
           >
-            <Img src={img.src} alt={img.title} priority={index === 0} />
-          </div>
+            <Img src={img.src} alt={img.title} priority={index === 0} showPlaceholder={false} />
+          </motion.div>
         ))}
       </div>
     );
@@ -212,21 +276,23 @@ function StackedPreview({ images, mode = 'stacked' }: { images: ImageData[]; mod
   return (
     <div className="relative w-full h-full">
       {preview.map((img, index) => (
-        <div
+        <motion.div
           key={img.id}
           className="absolute inset-0 rounded-2xl overflow-hidden border border-white/10"
+          initial={{ opacity: 0, y: 8 }}
+          animate={{ opacity: opacities[index], y: 0 }}
+          transition={{ duration: 0.36, ease: 'easeOut', delay: revealDelayForIndex(index) }}
           style={{
             transform: `rotate(${rotations[index]}deg) translate(${xOffsets[index]}px, ${yOffsets[index]}px) scale(${scales[index]})`,
-            opacity: opacities[index],
             zIndex: preview.length - index,
             boxShadow: '0 4px 20px rgba(0,0,0,0.3)',
             pointerEvents: index === 0 ? 'auto' : 'none'
           }}
         >
-          <Img src={img.src} alt={img.title} />
+          <Img src={img.src} alt={img.title} priority={index === 0} showPlaceholder={false} />
           {/* Gradient overlay for depth */}
           <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-black/20" />
-        </div>
+        </motion.div>
       ))}
     </div>
   );
@@ -235,13 +301,18 @@ function StackedPreview({ images, mode = 'stacked' }: { images: ImageData[]; mod
 export default function ImageStack() {
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [selectedSubCategory, setSelectedSubCategory] = useState<string | null>(null);
+  const [showAllCategoryPhotos, setShowAllCategoryPhotos] = useState(false);
   const [zoomedCategoryKey, setZoomedCategoryKey] = useState<string | null>(null);
   const [viewingPhoto, setViewingPhoto] = useState<{ images: ImageData[]; currentIndex: number } | null>(null);
   const [albumPhotoIndex, setAlbumPhotoIndex] = useState(0);
   const [renderKey, setRenderKey] = useState(0); // Force re-render key
+  const subCategoryGridRef = useRef<HTMLDivElement | null>(null);
+  const categoryGridRef = useRef<HTMLDivElement | null>(null);
+  const swipeStartRef = useRef<{ x: number; y: number } | null>(null);
 
   // Use robust scroll lock for album/lightbox states
-  const isAlbumOpen = !!(selectedCategory || zoomedCategoryKey || viewingPhoto);
+  // Only lock scroll for modal overlays. Category pages/grids need to remain scrollable.
+  const isAlbumOpen = !!(zoomedCategoryKey || viewingPhoto);
   useScrollLock(isAlbumOpen);
 
   // Cleanup effect to ensure proper state management
@@ -338,71 +409,113 @@ export default function ImageStack() {
   }, [viewingPhoto, zoomedCategoryKey]);
 
   const openAlbumZoom = (key: string) => {
-    console.log('Album clicked:', key);
+    hapticTap();
     const category = categories.find(c => c.key === key);
-    console.log('Category found:', category);
     if (category?.hasSubCategories) {
-      // For categories with subcategories, navigate to subcategory selection
-      console.log('Opening subcategory selection for:', key);
       setSelectedCategory(key);
-      
-      // Preload all subcategory images
+      setShowAllCategoryPhotos(false);
+
+      // Only warm the first image(s) for each subcategory to avoid freezing mobile
       if (category.subCategories) {
-        category.subCategories.forEach(sub => {
-          imagePreloader.preloadCategory(sub);
-        });
+        category.subCategories.forEach((sub) => preloadImageBatch(sub.images, 2));
       }
     } else {
-      // For categories without subcategories, open zoom overlay
-      console.log('Opening zoom overlay for:', key);
+      if (!category) return;
       setZoomedCategoryKey(key);
       setAlbumPhotoIndex(0);
-      
-      // Preload images for the category
-      imagePreloader.preloadCategory(category);
+
+      preloadImageBatch(getAllImagesFromCategory(category), 4);
     }
   };
   const closeAlbumZoom = () => {
-    console.log('Closing album zoom');
+    hapticTap();
     setZoomedCategoryKey(null);
     setAlbumPhotoIndex(0);
   };
   
   const openAlbum = (key: string) => {
-    console.log('Opening album:', key);
+    hapticTap();
     setSelectedCategory(key);
     setZoomedCategoryKey(null);
+    setSelectedSubCategory(null);
+    setShowAllCategoryPhotos(false);
     setAlbumPhotoIndex(0);
-    
-    // Preload images for the selected category
+
     const category = categories.find(c => c.key === key);
     if (category) {
-      imagePreloader.preloadCategory(category);
+      preloadImageBatch(getAllImagesFromCategory(category), 6);
     }
   };
 
   const resetToHomepage = () => {
-    console.log('Resetting to homepage');
-    // Force a complete state reset
+    hapticTap();
     setSelectedCategory(null);
     setSelectedSubCategory(null);
+    setShowAllCategoryPhotos(false);
     setZoomedCategoryKey(null);
     setViewingPhoto(null);
     setAlbumPhotoIndex(0);
     
-    // Force re-render by updating a key
     setRenderKey(prev => prev + 1);
-    
-    // Ensure scroll is restored
+
     document.body.style.overflow = 'unset';
-    
-    setTimeout(() => {
-      console.log('State reset complete');
-    }, 100);
+  };
+
+  const showScrollToTopButton = !!selectedCategory && !viewingPhoto && !zoomedCategoryKey;
+  const isInAlbumView = !!(selectedCategory || zoomedCategoryKey || viewingPhoto);
+
+  const scrollActiveAlbumToTop = () => {
+    const activeContainer = subCategoryGridRef.current || categoryGridRef.current;
+    if (activeContainer) {
+      activeContainer.scrollTo({ top: 0, behavior: 'smooth' });
+      return;
+    }
+
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const openAllPhotosInCategory = (key: string) => {
+    hapticTap();
+    const targetCategory = categories.find((c) => c.key === key);
+    if (!targetCategory) return;
+
+    setSelectedCategory(key);
+    setSelectedSubCategory(null);
+    setZoomedCategoryKey(null);
+    setShowAllCategoryPhotos(!!targetCategory.hasSubCategories);
+    setAlbumPhotoIndex(0);
+
+    preloadImageBatch(getAllImagesFromCategory(targetCategory), 6);
+  };
+
+  const onAlbumSwipeStart = (e: ReactTouchEvent<HTMLDivElement>) => {
+    const touch = e.changedTouches[0];
+    swipeStartRef.current = { x: touch.clientX, y: touch.clientY };
+  };
+
+  const onAlbumSwipeEnd = (
+    e: ReactTouchEvent<HTMLDivElement>,
+    onBack: () => void
+  ) => {
+    if (!swipeStartRef.current) return;
+    const touch = e.changedTouches[0];
+    const dx = touch.clientX - swipeStartRef.current.x;
+    const dy = Math.abs(touch.clientY - swipeStartRef.current.y);
+    swipeStartRef.current = null;
+
+    if (dx > 70 && dy < 60) {
+      hapticSwipe();
+      onBack();
+    }
   };
 
   return (
-    <div key={renderKey} className="w-full min-h-screen px-4 py-4 md:py-6 flex flex-col items-center">
+    <div
+      id="image-stack-root"
+      key={renderKey}
+      data-in-album={isInAlbumView ? 'true' : 'false'}
+      className="w-full min-h-screen px-4 py-4 md:py-6 flex flex-col items-center"
+    >
       {/* ALBUM GRID (landing) - Fluid responsive grid */}
       {!selectedCategory && (
         <>
@@ -416,7 +529,7 @@ export default function ImageStack() {
           {/* Cardimediakit Full Screen Image - Only on Home Page */}
           <section className="w-full mt-16">
             <img 
-              src="/images/cardimediakit.avif" 
+              src="/images/standalone/Cardi MK 3.png" 
               alt="Cardi Media Kit" 
               className="w-full h-auto object-cover"
             />
@@ -425,14 +538,26 @@ export default function ImageStack() {
       )}
 
       {/* SUBCATEGORY SELECTION - 2 columns with stacked previews */}
-      {selectedCategory && category && category.hasSubCategories && !selectedSubCategory && (
+      {selectedCategory && category && category.hasSubCategories && !selectedSubCategory && !showAllCategoryPhotos && (
         <>
-          <div className="w-full max-w-6xl mb-4 flex items-center">
+          <div className="w-full max-w-6xl mb-4 flex items-center justify-between gap-3">
             <button
+              type="button"
               onClick={resetToHomepage}
-              className="text-white/70 hover:text-white"
+              className="-ml-2 px-3 py-2 rounded-lg text-white/80 hover:text-white hover:bg-white/10 active:bg-white/15 touch-manipulation"
             >
-              ← Back
+              ← Back to Categories
+            </button>
+            <button
+              type="button"
+              onClick={() => openAllPhotosInCategory(category.key)}
+              className="w-10 h-10 rounded-lg bg-white/10 text-white flex items-center justify-center hover:bg-white/20 transition-colors"
+              aria-label="View all photos in category"
+              title="View all photos"
+            >
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
+              </svg>
             </button>
           </div>
           <h2 className="text-2xl font-semibold text-white mb-4 md:mb-6">{category.title}</h2>
@@ -440,20 +565,12 @@ export default function ImageStack() {
             {category.subCategories!.map(sc => (
               <button 
                 key={sc.key} 
+                type="button"
                 onClick={() => {
-                  console.log('Clicking subcategory:', sc.key);
-                  console.log('Subcategory data:', sc);
+                  hapticTap();
                   setSelectedSubCategory(sc.key);
-                  
-                  // Preload images for the selected subcategory
-                  imagePreloader.preloadCategory(sc);
-                }}
-                onTouchStart={() => {
-                  console.log('Touch subcategory:', sc.key);
-                  setSelectedSubCategory(sc.key);
-                  
-                  // Preload images for the selected subcategory
-                  imagePreloader.preloadCategory(sc);
+                  setShowAllCategoryPhotos(false);
+                  preloadImageBatch(sc.images, 6);
                 }}
                 className="text-left group min-w-[260px] touch-manipulation"
               >
@@ -468,58 +585,80 @@ export default function ImageStack() {
         </>
       )}
 
+      {/* ALL PHOTOS GRID FOR A CATEGORY WITH SUBCATEGORIES */}
+      {selectedCategory && category && category.hasSubCategories && showAllCategoryPhotos && !selectedSubCategory && (
+        <div
+          ref={categoryGridRef}
+          className="fixed inset-0 bg-black z-30 overflow-y-auto"
+          onTouchStart={onAlbumSwipeStart}
+          onTouchEnd={(e) => onAlbumSwipeEnd(e, resetToHomepage)}
+        >
+          <div className="min-h-full px-4 py-4 md:py-6 flex flex-col items-center">
+            <div className="w-full max-w-6xl mb-4 flex items-center">
+              <button
+                type="button"
+                onClick={resetToHomepage}
+                className="-ml-2 px-3 py-2 rounded-lg text-white/80 hover:text-white hover:bg-white/10 active:bg-white/15 touch-manipulation"
+              >
+                ← Back to Categories
+              </button>
+            </div>
+            <h2 className="text-2xl font-semibold text-white mb-4 md:mb-6">{category.title}</h2>
+            <div className="grid [grid-template-columns:repeat(auto-fit,minmax(220px,1fr))] gap-4 md:gap-6 w-full max-w-screen-2xl px-4">
+              {getAllImagesFromCategory(category).map((img, index, allImages) => (
+                <button
+                  key={`${img.id}-${img.src}`}
+                  type="button"
+                  onClick={() => {
+                    hapticTap();
+                    setViewingPhoto({ images: allImages, currentIndex: index });
+                    preloadNextImages(allImages, index, 3);
+                  }}
+                  className="aspect-[4/5] rounded-xl overflow-hidden bg-white/5 hover:scale-105 transition-transform touch-manipulation"
+                >
+                  <Img src={img.src} alt={img.title} />
+                </button>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* SUBCATEGORY GRID OF PHOTOS (full browse) */}
       {selectedCategory && selectedSubCategory && sub && (
-        <div className="fixed inset-0 bg-black z-30 overflow-y-auto">
+        <div
+          ref={subCategoryGridRef}
+          className="fixed inset-0 bg-black z-30 overflow-y-auto"
+          onTouchStart={onAlbumSwipeStart}
+          onTouchEnd={(e) => onAlbumSwipeEnd(e, resetToHomepage)}
+        >
           <div className="min-h-full px-4 py-4 md:py-6 flex flex-col items-center">
-            <div className="w-full max-w-6xl mb-4 flex items-center justify-between">
+            <div className="w-full max-w-6xl mb-4 flex items-center">
               <button
-                onClick={() => setSelectedSubCategory(null)}
-                className="text-white/70 hover:text-white"
-              >
-                ← Back
-              </button>
-              <button
+                type="button"
                 onClick={resetToHomepage}
-                className="text-white/70 hover:text-white"
+                className="-ml-2 px-3 py-2 rounded-lg text-white/80 hover:text-white hover:bg-white/10 active:bg-white/15 touch-manipulation"
               >
-                Categories
+                ← Back to Categories
               </button>
             </div>
             <h2 className="text-2xl font-semibold text-white mb-4 md:mb-6">{sub.title}</h2>
             <div className="grid [grid-template-columns:repeat(auto-fit,minmax(220px,1fr))] gap-4 md:gap-6 w-full max-w-screen-2xl px-4">
-              {(() => {
-                console.log('Rendering subcategory grid for:', sub.title);
-                console.log('Number of images:', sub.images.length);
-                console.log('First few images:', sub.images.slice(0, 3));
-                return sub.images.map((img, index) => (
+              {sub.images.map((img, index) => (
                   <button
                     key={img.id}
+                    type="button"
                     onClick={() => {
+                      hapticTap();
                       setViewingPhoto({ images: sub.images, currentIndex: index });
-                      
-                      // Preload next few images for smooth navigation
-                      const nextImages = sub.images.slice(index + 1, index + 4);
-                      nextImages.forEach(img => {
-                        imagePreloader.preloadImage(img.src);
-                      });
-                    }}
-                    onTouchStart={() => {
-                      setViewingPhoto({ images: sub.images, currentIndex: index });
-                      
-                      // Preload next few images for smooth navigation
-                      const nextImages = sub.images.slice(index + 1, index + 4);
-                      nextImages.forEach(img => {
-                        imagePreloader.preloadImage(img.src);
-                      });
+                      preloadNextImages(sub.images, index, 3);
                     }}
                     className="aspect-[4/5] rounded-xl overflow-hidden bg-white/5 hover:scale-105 transition-transform relative touch-manipulation"
                     style={{ minHeight: '200px' }}
                   >
-                    <Img src={img.src} alt={img.title} />
+          <Img src={img.src} alt={img.title} priority={index < 3} />
                   </button>
-                ));
-              })()}
+                ))}
             </div>
           </div>
         </div>
@@ -527,12 +666,17 @@ export default function ImageStack() {
 
       {/* INDIVIDUAL CATEGORY GRID OF PHOTOS (for categories without subcategories) */}
       {selectedCategory && category && !category.hasSubCategories && (
-        <div className="fixed inset-0 bg-black z-30 overflow-y-auto">
+        <div
+          ref={categoryGridRef}
+          className="fixed inset-0 bg-black z-30 overflow-y-auto"
+          onTouchStart={onAlbumSwipeStart}
+          onTouchEnd={(e) => onAlbumSwipeEnd(e, resetToHomepage)}
+        >
           <div className="min-h-full px-4 py-4 md:py-6 flex flex-col items-center">
             <div className="w-full max-w-6xl mb-4 flex items-center">
               <button
                 onClick={resetToHomepage}
-                className="text-white/70 hover:text-white"
+                className="-ml-2 px-3 py-2 rounded-lg text-white/80 hover:text-white hover:bg-white/10 active:bg-white/15 touch-manipulation"
               >
                 ← Back to Categories
               </button>
@@ -542,23 +686,11 @@ export default function ImageStack() {
               {category.images!.map((img, index) => (
                 <button
                   key={img.id}
+                  type="button"
                   onClick={() => {
+                    hapticTap();
                     setViewingPhoto({ images: category.images!, currentIndex: index });
-                    
-                    // Preload next few images for smooth navigation
-                    const nextImages = category.images!.slice(index + 1, index + 4);
-                    nextImages.forEach(img => {
-                      imagePreloader.preloadImage(img.src);
-                    });
-                  }}
-                  onTouchStart={() => {
-                    setViewingPhoto({ images: category.images!, currentIndex: index });
-                    
-                    // Preload next few images for smooth navigation
-                    const nextImages = category.images!.slice(index + 1, index + 4);
-                    nextImages.forEach(img => {
-                      imagePreloader.preloadImage(img.src);
-                    });
+                    preloadNextImages(category.images!, index, 3);
                   }}
                   className="aspect-[4/5] rounded-xl overflow-hidden bg-white/5 hover:scale-105 transition-transform touch-manipulation"
                 >
@@ -621,9 +753,11 @@ export default function ImageStack() {
                          onDragEnd={(event, info: PanInfo) => {
                            const swipeThreshold = 50;
                            if (info.offset.x > swipeThreshold) {
+                             hapticSwipe();
                              // Swipe right - go to previous photo
                              setAlbumPhotoIndex(prev => prev > 0 ? prev - 1 : images.length - 1);
                            } else if (info.offset.x < -swipeThreshold) {
+                             hapticSwipe();
                              // Swipe left - go to next photo
                              setAlbumPhotoIndex(prev => prev < images.length - 1 ? prev + 1 : 0);
                            }
@@ -649,17 +783,14 @@ export default function ImageStack() {
                                  {/* Top bar actions */}
                  <div className="absolute top-3 right-3 flex gap-2">
                    <button
+                     type="button"
                      onClick={(e) => {
                        e.stopPropagation();
-                       console.log('Grid button clicked for:', zoomedCategoryKey);
+                       hapticTap();
                        const category = categories.find(c => c.key === zoomedCategoryKey);
-                       console.log('Category found:', category);
                        if (category?.hasSubCategories) {
-                         console.log('Opening subcategory selection');
-                         setSelectedCategory(zoomedCategoryKey);
-                         setZoomedCategoryKey(null);
+                         openAllPhotosInCategory(zoomedCategoryKey);
                        } else {
-                         console.log('Opening grid view for', category!.images!.length, 'images');
                          setSelectedCategory(zoomedCategoryKey);
                          setZoomedCategoryKey(null);
                        }
@@ -672,6 +803,7 @@ export default function ImageStack() {
                      </svg>
                    </button>
                    <button
+                     type="button"
                      onClick={closeAlbumZoom}
                      className="w-10 h-10 rounded-lg bg-black/60 text-white flex items-center justify-center hover:bg-black/80 transition-colors"
                      aria-label="Close"
@@ -691,8 +823,10 @@ export default function ImageStack() {
                       return (
                      <>
                        <button
+                         type="button"
                          onClick={(e) => {
                            e.stopPropagation();
+                           hapticTap();
                            setAlbumPhotoIndex(prev => prev > 0 ? prev - 1 : images.length - 1);
                          }}
                          className="absolute left-4 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-black/50 text-white flex items-center justify-center hover:bg-black/70 transition-colors"
@@ -701,8 +835,10 @@ export default function ImageStack() {
                        </button>
                        
                        <button
+                         type="button"
                          onClick={(e) => {
                            e.stopPropagation();
+                           hapticTap();
                            setAlbumPhotoIndex(prev => prev < images.length - 1 ? prev + 1 : 0);
                          }}
                          className="absolute right-4 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-black/50 text-white flex items-center justify-center hover:bg-black/70 transition-colors"
@@ -743,12 +879,15 @@ export default function ImageStack() {
                animate={{ opacity: 1 }}
                exit={{ opacity: 0 }}
                transition={{ duration: 0.2 }}
-               onClick={() => setViewingPhoto(null)}
+               onClick={() => {
+                 hapticTap();
+                 setViewingPhoto(null);
+               }}
              />
              
              {/* Photo viewer */}
              <motion.div
-               className="fixed inset-0 z-60 flex items-center justify-center p-4"
+               className="fixed inset-0 z-[60] flex items-center justify-center p-4"
                initial={{ opacity: 0 }}
                animate={{ opacity: 1 }}
                exit={{ opacity: 0 }}
@@ -769,12 +908,14 @@ export default function ImageStack() {
                    onDragEnd={(event, info: PanInfo) => {
                      const swipeThreshold = 50;
                      if (info.offset.x > swipeThreshold) {
+                       hapticSwipe();
                        // Swipe right - go to previous photo
                        setViewingPhoto(prev => prev ? {
                          ...prev,
                          currentIndex: prev.currentIndex > 0 ? prev.currentIndex - 1 : prev.images.length - 1
                        } : null);
                      } else if (info.offset.x < -swipeThreshold) {
+                       hapticSwipe();
                        // Swipe left - go to next photo
                        setViewingPhoto(prev => prev ? {
                          ...prev,
@@ -809,8 +950,10 @@ export default function ImageStack() {
 
                  {/* Navigation buttons */}
                  <button
+                   type="button"
                    onClick={(e) => {
                      e.stopPropagation();
+                     hapticTap();
                      setViewingPhoto(prev => prev ? {
                        ...prev,
                        currentIndex: prev.currentIndex > 0 ? prev.currentIndex - 1 : prev.images.length - 1
@@ -822,8 +965,10 @@ export default function ImageStack() {
                  </button>
                  
                  <button
+                   type="button"
                    onClick={(e) => {
                      e.stopPropagation();
+                     hapticTap();
                      setViewingPhoto(prev => prev ? {
                        ...prev,
                        currentIndex: prev.currentIndex < prev.images.length - 1 ? prev.currentIndex + 1 : 0
@@ -836,7 +981,11 @@ export default function ImageStack() {
 
                  {/* Close button */}
                  <button
-                   onClick={() => setViewingPhoto(null)}
+                   type="button"
+                   onClick={() => {
+                     hapticTap();
+                     setViewingPhoto(null);
+                   }}
                    className="absolute top-4 right-4 w-10 h-10 rounded-full bg-black/50 text-white flex items-center justify-center hover:bg-black/70 transition-colors"
                    aria-label="Close"
                  >
@@ -861,6 +1010,21 @@ export default function ImageStack() {
            </>
          )}
        </AnimatePresence>
+
+      {showScrollToTopButton && (
+        <button
+          type="button"
+          onClick={() => {
+            hapticTap();
+            scrollActiveAlbumToTop();
+          }}
+          className="fixed bottom-5 right-5 z-[70] w-12 h-12 rounded-full bg-black/70 text-white border border-white/20 backdrop-blur-sm flex items-center justify-center hover:bg-black/85 transition-colors"
+          aria-label="Scroll to top"
+          title="Scroll to top"
+        >
+          ↑
+        </button>
+      )}
     </div>
    );
 }

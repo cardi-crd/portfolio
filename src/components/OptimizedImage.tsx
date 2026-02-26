@@ -1,12 +1,14 @@
+import Image from 'next/image';
 import { useState, useEffect, useRef } from 'react';
 import { normalizeImageSrc } from '@/lib/normalizeImageSrc';
-import { imagePreloader } from '@/lib/imagePreloader';
 
 interface OptimizedImageProps {
   src: string;
   alt: string;
   className?: string;
   priority?: boolean;
+  showPlaceholder?: boolean;
+  sizes?: string;
   onLoad?: () => void;
   onError?: (e: any) => void;
 }
@@ -16,16 +18,24 @@ export function OptimizedImage({
   alt, 
   className = '', 
   priority = false, 
+  showPlaceholder = true,
+  sizes = '(max-width: 768px) 100vw, 50vw',
   onLoad,
   onError 
 }: OptimizedImageProps) {
   const [isLoaded, setIsLoaded] = useState(false);
   const [hasError, setHasError] = useState(false);
   const [isInView, setIsInView] = useState(priority);
-  const imgRef = useRef<HTMLImageElement>(null);
+  const imgRef = useRef<HTMLDivElement>(null);
   const observerRef = useRef<IntersectionObserver | null>(null);
 
   const normalizedSrc = normalizeImageSrc(src);
+
+  useEffect(() => {
+    setIsLoaded(false);
+    setHasError(false);
+    setIsInView(priority);
+  }, [normalizedSrc, priority]);
 
   useEffect(() => {
     if (!normalizedSrc) return;
@@ -43,10 +53,11 @@ export function OptimizedImage({
           if (entry.isIntersecting) {
             setIsInView(true);
             observerRef.current?.disconnect();
+            observerRef.current = null;
           }
         },
         {
-          rootMargin: '50px', // Start loading 50px before visible
+          rootMargin: '250px', // Start loading well before visible for smoother scrolling
           threshold: 0.1
         }
       );
@@ -57,16 +68,10 @@ export function OptimizedImage({
     return () => {
       if (observerRef.current) {
         observerRef.current.disconnect();
+        observerRef.current = null;
       }
     };
   }, [normalizedSrc, priority]);
-
-  // Preload image when it comes into view
-  useEffect(() => {
-    if (isInView && normalizedSrc && !imagePreloader.isPreloaded(normalizedSrc)) {
-      imagePreloader.preloadImage(normalizedSrc);
-    }
-  }, [isInView, normalizedSrc]);
 
   if (!normalizedSrc) {
     console.warn('Missing/invalid src', { src, alt });
@@ -88,18 +93,21 @@ export function OptimizedImage({
   return (
     <div ref={imgRef} className={`relative ${className}`}>
       {/* Placeholder */}
-      {!isLoaded && (
-        <div className="absolute inset-0 bg-gray-200 animate-pulse" />
+      {showPlaceholder && !isLoaded && (
+        <div className="absolute inset-0 bg-white/5" />
       )}
       
       {/* Actual Image */}
       {isInView && (
-        <img
+        <Image
           src={normalizedSrc}
           alt={alt}
-          className={`transition-opacity duration-300 ${isLoaded ? 'opacity-100' : 'opacity-0'} ${className}`}
-          loading={priority ? "eager" : "lazy"}
+          fill
+          sizes={sizes}
+          className={`transition-opacity duration-200 ${isLoaded ? 'opacity-100' : 'opacity-0'} ${className}`}
+          loading={priority ? undefined : 'lazy'}
           decoding="async"
+          priority={priority}
           onLoad={() => {
             setIsLoaded(true);
             onLoad?.();
